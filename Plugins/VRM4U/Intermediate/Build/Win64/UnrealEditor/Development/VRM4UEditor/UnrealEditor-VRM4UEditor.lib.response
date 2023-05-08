@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-VRM4UEditor.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\SideProject\FPSProjectCopy\FPSProject 5.1\Intermediate\Build\Win64\FPSProjectEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.InclOrderUnreal5_0.h.obj"
+"C:\SideProject\FPSProjectCopy\FPSProject 5.1\Plugins\VRM4U\Intermediate\Build\Win64\UnrealEditor\Development\VRM4UEditor\Module.VRM4UEditor.cpp.obj"
+"C:\SideProject\FPSProjectCopy\FPSProject 5.1\Plugins\VRM4U\Intermediate\Build\Win64\UnrealEditor\Development\VRM4UEditor\Default.rc2.res"
+/OUT:"C:\SideProject\FPSProjectCopy\FPSProject 5.1\Plugins\VRM4U\Intermediate\Build\Win64\UnrealEditor\Development\VRM4UEditor\UnrealEditor-VRM4UEditor.lib"

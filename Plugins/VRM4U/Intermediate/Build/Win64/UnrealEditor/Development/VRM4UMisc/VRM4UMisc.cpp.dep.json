@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\sideproject\\fpsprojectcopy\\fpsproject 5.1\\plugins\\vrm4u\\source\\vrm4umisc\\private\\vrm4umisc.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\sideproject\\fpsprojectcopy\\fpsproject 5.1\\intermediate\\build\\win64\\fpsprojecteditor\\development\\unrealed\\sharedpch.unrealed.shadowerrors.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "c:\\sideproject\\fpsprojectcopy\\fpsproject 5.1\\plugins\\vrm4u\\intermediate\\build\\win64\\unrealeditor\\development\\vrm4umisc\\definitions.vrm4umisc.h",
+            "c:\\sideproject\\fpsprojectcopy\\fpsproject 5.1\\plugins\\vrm4u\\source\\vrm4umisc\\private\\vrm4umisc.h",
+            "c:\\sideproject\\fpsprojectcopy\\fpsproject 5.1\\plugins\\vrm4u\\source\\vrm4umisc\\private\\vrm4umisclog.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
