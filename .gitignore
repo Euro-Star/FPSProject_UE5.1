@@ -7,5 +7,6 @@
 /Content/InfimaGames
 FPSProject.sln
 /Content/Asset
-/Plugins/VRM4U
+/Plugins/VRM4U/Intermediate
+/Plugins/VRM4U/Binaries
 .vsconfig
