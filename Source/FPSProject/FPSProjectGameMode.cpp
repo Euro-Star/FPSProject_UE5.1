@@ -5,7 +5,6 @@
 #include "Character/FPSProjectCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "FPSProjectGameState.h"
-#include <Server/ServerController.h>
 
 AFPSProjectGameMode::AFPSProjectGameMode()
 	: Super()
@@ -17,5 +16,4 @@ AFPSProjectGameMode::AFPSProjectGameMode()
 	// use our custom HUD class
 	HUDClass = AFPSProjectHUD::StaticClass();
 	GameStateClass = AFPSProjectGameState::StaticClass();
-	PlayerControllerClass = AServerController::StaticClass();
 }

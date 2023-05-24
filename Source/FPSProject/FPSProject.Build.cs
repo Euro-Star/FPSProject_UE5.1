@@ -8,8 +8,8 @@ public class FPSProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "Sockets", "Networking",
-		"Json"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "Sockets", "Networking","SocketClient",
+		"Json", "JsonUtilities"});
 
         PrivateIncludePaths.Add(ModuleDirectory);
         PublicIncludePaths.Add(ModuleDirectory);

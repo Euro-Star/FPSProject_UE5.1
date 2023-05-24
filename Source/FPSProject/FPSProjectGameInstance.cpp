@@ -2,20 +2,22 @@
 
 
 #include "FPSProjectGameInstance.h"
+#include <SocketClient/Public/PacketExecutor.h>
 
 void UFPSProjectGameInstance::Init()
 {
 	Super::Init();
 
 	ConnectServer();
+
+	USocketClientBPLibrary::GetSocketClientTarget()->OnReceiveTCPMessageEventDelegate.AddUObject(this, &UFPSProjectGameInstance::RecvPacket);
+	USocketClientBPLibrary::GetSocketClientTarget()->OnReceiveUDPMessageEventDelegate.AddUObject(this, &UFPSProjectGameInstance::RecvPacket);
 }
 
 void UFPSProjectGameInstance::ConnectServer()
 {
-	DisConnectServer();
+	USocketClientBPLibrary::GetSocketClientTarget()->ConnectTCPAndUDP(IP, TCPPort, UDPPort, ServerConnectID);
 
-	//TCPSocketComp = new TCPSocketClient(IP, Port, this);
-	//UDPSocketComp = new UDPSocketClient(EnterIP, 2231, this);
 }
 
 void UFPSProjectGameInstance::DisConnectServer()
@@ -24,4 +26,19 @@ void UFPSProjectGameInstance::DisConnectServer()
 
 void UFPSProjectGameInstance::ReConnectServer(FString ip, int32 tcpPort, int32 udpPort, int32 sessonid)
 {
+}
+
+void UFPSProjectGameInstance::RecvPacket(FString packetName, TSharedPtr<FJsonObject> jsonData, FString connectID)
+{
+	if (connectID == ServerConnectID)
+	{
+		TSharedPtr<FRecvPacket_Wrapper> jsonWrap = MakeShareable(new FRecvPacket_Wrapper());
+		jsonWrap->Packet = jsonData;
+		jsonWrap->packetname = packetName;
+
+		if (!JsonQueue.Enqueue(jsonWrap))
+		{
+			UE_LOG(LogTemp, Error, TEXT("ERROR Failed to Packet Enqueue"));
+		}
+	}
 }

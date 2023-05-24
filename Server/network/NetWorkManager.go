@@ -1,7 +1,6 @@
 package network
 
 import (
-	"FPSProject/content"
 	"FPSProject/pkt"
 	"FPSProject/utils"
 	"errors"
@@ -36,15 +35,15 @@ func (s *Server) RunTCP(addr string) {
 		}
 
 		log.Println("New Connection : " + conn.RemoteAddr().String())
-		s.testSend(conn)
+		//s.testSend(conn)
 
 		go s.EventLoop(conn)
 	}
 }
 
 func (s *Server) testSend(conn net.Conn) {
-	recvpkt := pkt.S_Test{Id: "testrrr"}
-	sendbuffer := utils.MakeSendBuffer("Test", recvpkt)
+	recvpkt := pkt.S_Test{Msg: "testrrr"}
+	sendbuffer := utils.MakeSendBuffer("TestPacket", recvpkt)
 	conn.Write(sendbuffer)
 }
 
@@ -75,13 +74,14 @@ func (s *Server) EventLoop(conn net.Conn) {
 
 			if recvn == namesize+datasize {
 				pktname, jsondata := utils.ExtractData(namesize, datasize, recvdata)
-
-				if _, ok := content.GetPacketHandler().TCPHandlerFunc[pktname]; ok {
-					log.Println(pktname, jsondata)
-					content.GetPacketHandler().TCPHandlerFunc[pktname](conn, jsondata)
-				} else {
-					log.Println("Unknown Packet : " + pktname)
-				}
+				log.Println(pktname, jsondata)
+				s.testSend(conn)
+				// if _, ok := content.GetPacketHandler().TCPHandlerFunc[pktname]; ok {
+				// 	log.Println(pktname, jsondata)
+				// 	content.GetPacketHandler().TCPHandlerFunc[pktname](conn, jsondata)
+				// } else {
+				// 	log.Println("Unknown Packet : " + pktname)
+				// }
 
 			} else {
 				log.Println("Recv Wrong Datasize !")

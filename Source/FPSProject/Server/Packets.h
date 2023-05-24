@@ -1,62 +1,47 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Packets.generated.h"
 
-
 #define PACKET_CONSTRUCT(packetId)\
+FSendPacket_##packetId()\
+{\
+packetname = #packetId;\
+}\
 UPROPERTY()\
-FString packetname = #packetId;\
+FString packetname;\
 UPROPERTY()\
 bool isTCP = true; \
 
 #define PACKET_CONSTRUCT_UDP(packetId)\
+FSendPacket_##packetId()\
+{\
+packetname = #packetId;\
+}\
 UPROPERTY()\
-FString packetname = #packetId;\
+FString packetname;\
 UPROPERTY()\
 bool isTCP = false; \
 
-/////////////////////////////////////////////////////////////
+
 USTRUCT()
-struct FRecvPacket_Wrapper
+struct FSendPacket_TestPacket
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
-	FString packetname;
-
-	TSharedPtr<FJsonObject> Packet;
-};
-/////////////////////////////////////////////////////////////
-
-
-USTRUCT()
-struct FSendPacket_Login
-{
-	GENERATED_BODY()
-	
-	PACKET_CONSTRUCT(Login)
+	PACKET_CONSTRUCT(TestPacket)
 
 	UPROPERTY()
-	FString				packetid;
+	FString					msg;
 };
 
 USTRUCT()
-struct FRecvPacket_Login
+struct FRecvPacket_TestPacket
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
-	FString					Playerid;
-};
-
-USTRUCT()
-struct FSendPacket_NickNameSet
-{
-	GENERATED_BODY()
-
-	PACKET_CONSTRUCT(NickNameSet)
-
-	UPROPERTY()
-	FString				packetid;
+	FString		msg;
 };

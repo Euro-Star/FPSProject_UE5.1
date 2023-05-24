@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include <SocketClientPluginUDPClient.h>
+#include <PacketExecutor.h>
 #include "FPSProjectGameInstance.generated.h"
 
 /**
@@ -17,7 +19,9 @@ class FPSPROJECT_API UFPSProjectGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 
+	UFUNCTION()
 	void ConnectServer();
+
 	void DisConnectServer();
 	void ReConnectServer(FString ip, int32 tcpPort, int32 udpPort, int32 sessonid);
 
@@ -29,25 +33,37 @@ public:
 	FString IP = "127.0.0.1";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
-	int32 Port = 1998;
+	int32 TCPPort = 1998;	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+	int32 UDPPort = 1999;
 
-	// Sockets
-	class TCPSocketClient* TCPSocketComp = nullptr;
-	class UDPSocketClient* UDPSocketComp = nullptr;
 
-	// SendData
+	UPROPERTY()
+	FString ServerConnectID;
+
+	void RecvPacket(FString packetName, TSharedPtr<FJsonObject> jsonData, FString connectID);
+
+	TQueue<TSharedPtr<FRecvPacket_Wrapper>, EQueueMode::Mpsc> JsonQueue;
+
+public:
 	template<typename T>
 	void SendData(T data)
 	{
-		if (data.isTCP)
+		FString JSONPayload;
+		FString PacketName;
+		if (FJsonObjectConverter::UStructToJsonObjectString(data, JSONPayload, 0, 0, 0, nullptr, false))
 		{
-			if (TCPSocketComp)
-				TCPSocketComp->SendData(data);
-		}
-		else
-		{
-			if (UDPSocketComp)
-				UDPSocketComp->SendData(data);
+			if (data.isTCP)
+			{
+				PacketName = data.packetname;
+				USocketClientBPLibrary::GetSocketClientTarget()->SocketClientSendTCP(ServerConnectID, PacketName, JSONPayload);
+			}
+			else
+			{
+				PacketName = data.packetname;
+				USocketClientBPLibrary::GetSocketClientTarget()->SocketClientSendUDP(ServerConnectID, PacketName, JSONPayload);
+			}
 		}
 	}
 };
