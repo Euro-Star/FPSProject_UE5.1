@@ -66,7 +66,7 @@ AFPSProjectCharacter::AFPSProjectCharacter()
 
 	TPS_Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMeshTPS"));
 	TPS_Mesh->SetOnlyOwnerSee(true);
-	TPS_Mesh->SetupAttachment(CameraBoom);
+	TPS_Mesh->SetupAttachment(RootComponent);
 	TPS_Mesh->bCastDynamicShadow = false;
 	TPS_Mesh->CastShadow = false;
 	TPS_Mesh->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
@@ -115,14 +115,16 @@ void AFPSProjectCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	SetTPSCharacter();
+
 	HUD = Cast<AFPSProjectHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 	GamePlayWidget = HUD->W_GamePlay;
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
-	FP_Gun->AttachToComponent(FPS_CharacterMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Weapon"));
+	FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
+	FP_Gun->SetRelativeLocationAndRotation(FVector(-7.4f, 1.6f, -0.27f), FRotator(-83.0f, 156.0f, -64.8f));// x -64 y -83 z 156
 	Scope->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Scope"));
 	Magazine->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
-	TPS_Mesh->SetHiddenInGame(false, true);
 
 	// Show or hide the two versions of the gun based on whether or not we're using motion controllers.
 	if (bUsingMotionControllers)
@@ -177,14 +179,14 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 void AFPSProjectCharacter::OnFire()
 {
 
-	FVector LineTraceStart = FirstPersonCameraComponent->GetComponentLocation();
-	FVector LineTraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 2000.0f;
+	FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
+	FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 2000.0f;
 
 	FHitResult LineTraceResult;
 	FCollisionQueryParams DefaltParams;
 
-	//GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
-	//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
+	GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
+	DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
 
 	if (IsReload)
 	{
@@ -230,15 +232,15 @@ void AFPSProjectCharacter::FireBullet()
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
-		const FRotator SpawnRotation = FirstPersonCameraComponent->GetComponentRotation();
+		const FRotator SpawnRotation = ThirdPersonCameraComponent->GetComponentRotation();
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = FirstPersonCameraComponent->GetComponentLocation();
+		const FVector SpawnLocation = ThirdPersonCameraComponent->GetComponentLocation();
 
 		ABulletBase* Bullet = nullptr;
 		Bullet = mBulletManager->UseBullet(Bullet);
 		if (Bullet)
 		{
-			Bullet->UseBullet(SpawnLocation, SpawnRotation, FirstPersonCameraComponent->GetForwardVector());
+			Bullet->UseBullet(SpawnLocation, SpawnRotation, ThirdPersonCameraComponent->GetForwardVector());
 
 			CurrentAmmo -= 1;
 
@@ -269,10 +271,11 @@ void AFPSProjectCharacter::ZoomIn()
 	if (!IsZoomIn)
 	{
 		IsZoomIn = true;
+		bUseControllerRotationYaw = true;
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
 			{
 				ZoominFrame += 0.1f;
-				FirstPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
+				ThirdPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
 				if (ZoominFrame >= 1.0f)
 				{
 					GetWorld()->GetTimerManager().ClearTimer(ZoominTimer);
@@ -289,10 +292,11 @@ void AFPSProjectCharacter::ZoomIn()
 void AFPSProjectCharacter::ZoomOut()
 {
 	IsZoomIn = false;
+	bUseControllerRotationYaw = false;
 	GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
 		{
 			ZoominFrame -= 0.1f;
-			FirstPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
+			ThirdPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
 			if (ZoominFrame <= 0.0f)
 			{
 				GetWorld()->GetTimerManager().ClearTimer(ZoominTimer);
