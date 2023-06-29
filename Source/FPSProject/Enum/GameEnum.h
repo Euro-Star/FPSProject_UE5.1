@@ -7,21 +7,24 @@
 /**
  * 
  */
-class FPSPROJECT_API GameEnum
-{
-public:
-	GameEnum();
-	~GameEnum();
 
-	UENUM(BlueprintType)
-	enum class EGameColor : uint8
-	{
-		Red,
-		Orange,
-		Yellow,
-		Green,
-		Blue,
-		DarkBlue,
-		Purple
-	};
+UENUM(BlueprintType)
+enum class EGameColor : uint8
+{
+	Red,
+	Orange,
+	Yellow,
+	Green,
+	Blue,
+	DarkBlue,
+	Purple
+};
+
+UENUM(BlueprintType)
+enum class EInputKey : uint8
+{
+	Up,
+	Down,
+	Left,
+	Right
 };

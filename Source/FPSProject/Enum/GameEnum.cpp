@@ -2,11 +2,3 @@
 
 
 #include "Enum/GameEnum.h"
-
-GameEnum::GameEnum()
-{
-}
-
-GameEnum::~GameEnum()
-{
-}

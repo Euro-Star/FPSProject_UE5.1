@@ -45,3 +45,71 @@ struct FRecvPacket_TestPacket
 	UPROPERTY()
 	FString		msg;
 };
+
+USTRUCT()
+struct FRecvPacket_PlayerRotation
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 PlayerId;
+
+	UPROPERTY()
+	float RotationY;
+};
+
+USTRUCT()
+struct FSendPacket_PlayerRotation
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(PlayerRotation)
+
+	UPROPERTY()
+	int32 PlayerId;
+
+	UPROPERTY()
+	float RotationY;
+};
+
+USTRUCT()
+struct FSendPacket_PlayerMove
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(PlayerMove)
+
+	UPROPERTY()
+	int32 PlayerId;
+
+	// 0: Up, 1: Down, 2: Left, 3: Right
+	UPROPERTY() 
+	int32 InputKey;
+
+	// Press 인지 Release 인지 구분
+	UPROPERTY()
+	bool IsPress;
+
+	UPROPERTY()
+	FVector CurrentLocation;
+};
+
+USTRUCT()
+struct FRecvPacket_PlayerMove
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 PlayerId;
+
+	// 0: Up, 1: Down, 2: Left, 3: Right
+	UPROPERTY() 
+	int32 InputKey;
+
+	// Press 인지 Release 인지 구분
+	UPROPERTY()
+	bool IsPress;
+
+	UPROPERTY()
+	FVector CurrentLocation;
+};

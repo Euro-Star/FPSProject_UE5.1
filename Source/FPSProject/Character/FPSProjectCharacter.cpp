@@ -19,6 +19,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Widget/GamePlayWidget.h"
 #include "Enum/GameEnum.h"
+#include <Server/Packets.h>
+#include <FPSProjectGameInstance.h>
+#include <JsonObjectConverter.h>
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -135,6 +138,131 @@ void AFPSProjectCharacter::BeginPlay()
 	{
 		FPS_CharacterMesh->SetHiddenInGame(false, true);
 	}
+
+	Inst = Cast<UFPSProjectGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+}
+
+void AFPSProjectCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	SendPlayerRotation();
+}
+
+void AFPSProjectCharacter::SendPlayerRotation()
+{
+	float PlayerRotation_Y = FQuat::FindBetween(FVector::ForwardVector, ThirdPersonCameraComponent->GetForwardVector()).Z;
+	FSendPacket_PlayerRotation S_PlayerRotation;
+
+	S_PlayerRotation.isTCP = false;
+	S_PlayerRotation.PlayerId = 0;
+	S_PlayerRotation.RotationY = PlayerRotation_Y;
+
+	Inst->SendData(S_PlayerRotation);
+}
+
+void AFPSProjectCharacter::SendPressPlayerMoveUp()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Up;
+	S_PlayerMove.IsPress = true;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendPressPlayerMoveDown()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Down;
+	S_PlayerMove.IsPress = true;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendPressPlayerMoveLeft()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Left;
+	S_PlayerMove.IsPress = true;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendPressPlayerMoveRight()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Right;
+	S_PlayerMove.IsPress = true;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerMoveUp()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Up;
+	S_PlayerMove.IsPress = false;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerMoveDown()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Down;
+	S_PlayerMove.IsPress = false;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerMoveLeft()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Left;
+	S_PlayerMove.IsPress = false;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerMoveRight()
+{
+	FSendPacket_PlayerMove S_PlayerMove;
+
+	S_PlayerMove.isTCP = true;
+	S_PlayerMove.InputKey = (int32)EInputKey::Right;
+	S_PlayerMove.IsPress = false;
+	S_PlayerMove.PlayerId = 0;
+	S_PlayerMove.CurrentLocation = GetActorLocation();
+
+	Inst->SendData(S_PlayerMove);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -174,6 +302,19 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &AFPSProjectCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPSProjectCharacter::LookUpAtRate);
+
+	// 키 인식 서버로 보냄(이동 동기화)
+	PlayerInputComponent->BindAction("Up", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveUp);
+	PlayerInputComponent->BindAction("Up", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveUp);
+
+	PlayerInputComponent->BindAction("Down", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveDown);
+	PlayerInputComponent->BindAction("Down", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveDown);
+
+	PlayerInputComponent->BindAction("Left", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveLeft);
+	PlayerInputComponent->BindAction("Left", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveLeft);
+
+	PlayerInputComponent->BindAction("Right", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveRight);
+	PlayerInputComponent->BindAction("Right", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveRight);
 }
 
 void AFPSProjectCharacter::OnFire()

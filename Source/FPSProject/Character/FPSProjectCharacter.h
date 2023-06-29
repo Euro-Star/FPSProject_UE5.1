@@ -113,11 +113,27 @@ protected:
 
 	UPROPERTY()
 	int32 CurrentColor;
+
+	UPROPERTY()
+	class UFPSProjectGameInstance* Inst;
 public:
 	AFPSProjectCharacter();
 
 protected:
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
+
+	void SendPlayerRotation();
+
+	void SendPressPlayerMoveUp();
+	void SendPressPlayerMoveDown();
+	void SendPressPlayerMoveLeft();
+	void SendPressPlayerMoveRight();
+
+	void SendReleasePlayerMoveUp();
+	void SendReleasePlayerMoveDown();
+	void SendReleasePlayerMoveLeft();
+	void SendReleasePlayerMoveRight();
 
 protected:
 	UFUNCTION()
