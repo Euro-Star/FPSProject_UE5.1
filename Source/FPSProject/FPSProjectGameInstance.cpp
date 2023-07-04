@@ -3,6 +3,7 @@
 
 #include "FPSProjectGameInstance.h"
 #include <SocketClient/Public/PacketExecutor.h>
+#include "Server/Packets.h"
 
 void UFPSProjectGameInstance::Init()
 {
@@ -41,4 +42,11 @@ void UFPSProjectGameInstance::RecvPacket(FString packetName, TSharedPtr<FJsonObj
 			UE_LOG(LogTemp, Error, TEXT("ERROR Failed to Packet Enqueue"));
 		}
 	}
+}
+
+void UFPSProjectGameInstance::EnterGame()
+{
+	FSendPacket_EnterGame S_EnterGame;
+
+	SendData(S_EnterGame);
 }

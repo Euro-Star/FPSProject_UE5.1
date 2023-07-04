@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include <SocketClientPluginUDPClient.h>
 #include <PacketExecutor.h>
+#include <JsonObjectConverter.h>
 #include "FPSProjectGameInstance.generated.h"
 
 /**
@@ -30,7 +31,7 @@ public:
 	class AFPSProjectCharacter* Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
-	FString IP = "127.0.0.1";
+	FString IP = "43.201.129.34";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 	int32 TCPPort = 1998;	
@@ -40,7 +41,7 @@ public:
 
 
 	UPROPERTY()
-	FString ServerConnectID;
+	FString ServerConnectID = "1";
 
 	void RecvPacket(FString packetName, TSharedPtr<FJsonObject> jsonData, FString connectID);
 
@@ -66,4 +67,9 @@ public:
 			}
 		}
 	}
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void EnterGame();
 };

@@ -10,6 +10,9 @@
 /**
  * 
  */
+
+class AFPSProjectGameState;
+
 UCLASS()
 class FPSPROJECT_API AServerController : public APlayerController, public IPacketExecutor
 {
@@ -26,8 +29,23 @@ protected:
 	UFUNCTION()
 	void TestPacket(FRecvPacket_Wrapper& packetWrapper); //FPacketHandlerFuncÀÇ ÇÔ¼ö
 
+	UFUNCTION()
+	void EnterGame(FRecvPacket_Wrapper& packetWrapper);
+
+	UFUNCTION()
+	void PlayerSpawn(FRecvPacket_Wrapper& packetWrapper);
+
+	//UFUNCTION()
+	//void PlayerMove(FRecvPacket_Wrapper& packetWrapper);
+	//
+	//UFUNCTION()
+	//void PlayerRotation(FRecvPacket_Wrapper& packetWrapper);
+
 private:
 	UPROPERTY()
 	TMap<FString, FPacketHandlerFunc> HandleFunc;
+
+	UPROPERTY()
+	TObjectPtr<AFPSProjectGameState> GameState;
 	
 };

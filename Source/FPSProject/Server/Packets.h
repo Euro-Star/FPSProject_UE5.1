@@ -113,3 +113,41 @@ struct FRecvPacket_PlayerMove
 	UPROPERTY()
 	FVector CurrentLocation;
 };
+
+USTRUCT()
+struct FSendPacket_PlayerSpawn
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(PlayerSpawn)
+
+	UPROPERTY()
+	TArray<int32> SpawnIndex;
+};
+
+USTRUCT()
+struct FRecvPacket_PlayerSpawn
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<int32> SpawnIndex;
+};
+
+USTRUCT()
+struct FSendPacket_EnterGame
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(EnterGame)
+};
+
+USTRUCT()
+struct FRecvPacket_EnterGame
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 PlayerId;
+};
+

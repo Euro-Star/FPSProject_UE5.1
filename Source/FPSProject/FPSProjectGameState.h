@@ -9,6 +9,11 @@
 /**
  * 
  */
+
+class ASpawnPoint;
+class AOtherCharacter;
+class AFPSProjectCharacter;
+
 UCLASS()
 class FPSPROJECT_API AFPSProjectGameState : public AGameStateBase
 {
@@ -21,6 +26,21 @@ private:
 	UPROPERTY()
 	TArray<bool> GameColorArray;
 
+	UPROPERTY()
+	TArray<ASpawnPoint*> SpawnPoint;
+
+	UPROPERTY()
+	int32 PlayerId;
+
+	UPROPERTY()
+	TSubclassOf<AOtherCharacter> OtherCharacter;
+
+	UPROPERTY()
+	TObjectPtr<AFPSProjectCharacter> Player;
+
+	UPROPERTY()
+	TArray<AOtherCharacter*> OtherCharaterArray;
+
 public:
 	UFUNCTION()
 	int32 GetEnemyTarget(int32 CurrentColor);
@@ -28,4 +48,15 @@ public:
 	UFUNCTION()
 	void SetNotExistPlayerColor(int32 Color);
 
+	UFUNCTION(BlueprintCallable)
+	void SetSpawnPoint(TArray<ASpawnPoint*> _SpawnPoint);
+	TArray<ASpawnPoint*> GetSpawnPoint();
+
+	void SetPlayerId(int32 _PlayerId);
+	int32 GetPlayerId();
+
+	UClass* GetOtherCharacterClass();
+	TObjectPtr<AFPSProjectCharacter> GetPlayer();
+
+	void AddOtherCharacter(AOtherCharacter* _OtherCharacter, int32 Index);
 };
