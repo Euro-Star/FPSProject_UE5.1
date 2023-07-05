@@ -22,7 +22,9 @@ func (ph *PacketHandler) Init() {
 	------------------------------------------------------------ */
 
 	// GStar 전용
-	ph.TCPHandlerFunc["GStarSelect"] = ph.Handle_GStarSelect
+	ph.TCPHandlerFunc["Enter"] = ph.Handle_Enter
+	ph.TCPHandlerFunc["PlayerRotation"] = ph.Handle_PlayerRotation
+	ph.TCPHandlerFunc["PlayerMove"] = ph.Handle_PlayerMove
 
 	//ph.UDPHandlerFunc["PlayerMove"] = ph.Handle_PlayerMove
 }
@@ -31,7 +33,18 @@ func (ph *PacketHandler) Init() {
 					TCP Handler Function
 ------------------------------------------------------------ */
 
-func (ph *PacketHandler) Handle_GStarSelect(c net.Conn, json string) {
+func (ph *PacketHandler) Handle_Enter(c net.Conn, json string) {
+
+	//recvpkt := utils.JsonStrToStruct[pkt.C_GStarSelect](json)
+	//GetGlobalSession().GStarSelect(c, recvpkt)
+}
+
+func (ph *PacketHandler) Handle_PlayerRotation(c net.Conn, json string) {
+
+	//recvpkt := utils.JsonStrToStruct[pkt.C_GStarSelect](json)
+	//GetGlobalSession().GStarSelect(c, recvpkt)
+}
+func (ph *PacketHandler) Handle_PlayerMove(c net.Conn, json string) {
 
 	//recvpkt := utils.JsonStrToStruct[pkt.C_GStarSelect](json)
 	//GetGlobalSession().GStarSelect(c, recvpkt)

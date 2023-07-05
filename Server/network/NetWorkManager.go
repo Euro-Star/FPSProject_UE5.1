@@ -1,6 +1,7 @@
 package network
 
 import (
+	"FPSProject/content"
 	"FPSProject/pkt"
 	"FPSProject/utils"
 	"errors"
@@ -74,14 +75,12 @@ func (s *Server) EventLoop(conn net.Conn) {
 
 			if recvn == namesize+datasize {
 				pktname, jsondata := utils.ExtractData(namesize, datasize, recvdata)
-				log.Println(pktname, jsondata)
-				s.testSend(conn)
-				// if _, ok := content.GetPacketHandler().TCPHandlerFunc[pktname]; ok {
-				// 	log.Println(pktname, jsondata)
-				// 	content.GetPacketHandler().TCPHandlerFunc[pktname](conn, jsondata)
-				// } else {
-				// 	log.Println("Unknown Packet : " + pktname)
-				// }
+				if _, ok := content.GetPacketHandler().TCPHandlerFunc[pktname]; ok {
+					log.Println("[PACKET RECV]", pktname, jsondata)
+					content.GetPacketHandler().TCPHandlerFunc[pktname](conn, jsondata)
+				} else {
+					log.Println("Unknown Packet : " + pktname)
+				}
 
 			} else {
 				log.Println("Recv Wrong Datasize !")
