@@ -75,3 +75,8 @@ void AFPSProjectGameState::AddOtherCharacter(AOtherCharacter* _OtherCharacter, i
 {
 	OtherCharaterArray[Index] = _OtherCharacter;
 }
+
+inline TObjectPtr<AOtherCharacter> AFPSProjectGameState::GetOtherCharacter(int32 Index)
+{
+	return OtherCharaterArray[Index];
+}

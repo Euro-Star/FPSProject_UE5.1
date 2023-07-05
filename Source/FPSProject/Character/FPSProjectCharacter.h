@@ -115,6 +115,18 @@ protected:
 	int32 CurrentColor;
 
 	UPROPERTY()
+	float PlayerRotation_Y = 0.0f;
+
+	UPROPERTY()
+	float PrevRotation_Y = 0.0f;
+
+	UPROPERTY()
+	float Timer = 0.0f;
+
+	UPROPERTY()
+	float Interval = 0.05f;
+
+	UPROPERTY()
 	class UFPSProjectGameInstance* Inst;
 public:
 	AFPSProjectCharacter();
@@ -123,7 +135,7 @@ protected:
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;
 
-	void SendPlayerRotation();
+	float SendPlayerRotation();
 
 	void SendPressPlayerMoveUp();
 	void SendPressPlayerMoveDown();

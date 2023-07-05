@@ -77,3 +77,19 @@ void AServerController::PlayerSpawn(FRecvPacket_Wrapper& packetWrapper)
 		}
 	}
 }
+
+void AServerController::PlayerMove(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(PlayerMove)
+
+	if(ptr)
+	{
+		GameState->GetOtherCharacter(ptr->PlayerId)->SetActorLocation(ptr->CurrentLocation);
+		GameState->GetOtherCharacter(ptr->PlayerId)->SetKeyDown(ptr->InputKey, ptr->IsPress);
+	}
+}
+
+void AServerController::PlayerRotation(FRecvPacket_Wrapper& packetWrapper)
+{
+
+}

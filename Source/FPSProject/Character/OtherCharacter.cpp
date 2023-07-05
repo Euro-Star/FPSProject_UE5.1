@@ -24,6 +24,11 @@ void AOtherCharacter::BeginPlay()
 	Gun->SetRelativeLocationAndRotation(FVector(-7.4f, 1.6f, -0.27f), FRotator(-83.0f, 156.0f, -64.8f));// x -64 y -83 z 156
 }
 
+void AOtherCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
 
 void AOtherCharacter::Attacked()
 {
@@ -32,6 +37,55 @@ void AOtherCharacter::Attacked()
 	if (HitAnimInstance != nullptr)
 	{
 		HitAnimInstance->Montage_Play(HitAnim, 1.f);
+	}
+}
+
+void AOtherCharacter::MoveForward(float Value)
+{
+	if (Value != 0.0f)
+	{
+		// add movement in that direction
+		AddMovementInput(GetActorForwardVector(), Value);
+	}
+}
+
+void AOtherCharacter::MoveRight(float Value)
+{
+	if (Value != 0.0f)
+	{
+		// add movement in that direction
+		AddMovementInput(GetActorRightVector(), Value);
+	}
+}
+
+void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
+{
+	switch (KeyValue)
+	{
+		case 0:
+		{
+			bUp = Pressed;
+			break;
+		}
+		case 1:
+		{
+			bDown = Pressed;
+			break;
+		}
+		case 2:
+		{
+			bLeft = Pressed;
+			break;
+		}
+		case 3:
+		{
+			bRight = Pressed;
+			break;
+		}
+		default:
+		{
+			break;
+		}
 	}
 }
 

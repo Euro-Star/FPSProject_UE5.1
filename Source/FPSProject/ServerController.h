@@ -35,11 +35,11 @@ protected:
 	UFUNCTION()
 	void PlayerSpawn(FRecvPacket_Wrapper& packetWrapper);
 
-	//UFUNCTION()
-	//void PlayerMove(FRecvPacket_Wrapper& packetWrapper);
-	//
-	//UFUNCTION()
-	//void PlayerRotation(FRecvPacket_Wrapper& packetWrapper);
+	UFUNCTION()
+	void PlayerMove(FRecvPacket_Wrapper& packetWrapper);
+	
+	UFUNCTION()
+	void PlayerRotation(FRecvPacket_Wrapper& packetWrapper);
 
 private:
 	UPROPERTY()

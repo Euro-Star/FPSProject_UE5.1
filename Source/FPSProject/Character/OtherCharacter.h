@@ -23,9 +23,19 @@ public:
 	USkeletalMeshComponent* Gun;
 
 protected:
+	bool bUp = false;
+	bool bDown = false;
+	bool bLeft = false;
+	bool bRight = false;
+
+protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 public:	
 	void Attacked();
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 
+	void SetKeyDown(int32 KeyValue, bool Pressed);
 };

@@ -145,13 +145,24 @@ void AFPSProjectCharacter::BeginPlay()
 void AFPSProjectCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	Timer += DeltaTime;
 
-	SendPlayerRotation();
+	if (Timer >= Interval)
+	{
+		PlayerRotation_Y = FQuat::FindBetween(FVector::ForwardVector, ThirdPersonCameraComponent->GetForwardVector()).Z;
+
+		if (!(FMath::RoundToZero(PlayerRotation_Y) == FMath::RoundToZero(PrevRotation_Y)))
+		{
+			PrevRotation_Y = SendPlayerRotation();
+		}
+
+		Timer = 0.0f;
+	}	
 }
 
-void AFPSProjectCharacter::SendPlayerRotation()
+float AFPSProjectCharacter::SendPlayerRotation()
 {
-	float PlayerRotation_Y = FQuat::FindBetween(FVector::ForwardVector, ThirdPersonCameraComponent->GetForwardVector()).Z;
 	FSendPacket_PlayerRotation S_PlayerRotation;
 
 	S_PlayerRotation.isTCP = false;
@@ -159,6 +170,8 @@ void AFPSProjectCharacter::SendPlayerRotation()
 	S_PlayerRotation.RotationY = PlayerRotation_Y;
 
 	Inst->SendData(S_PlayerRotation);
+
+	return PlayerRotation_Y;
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveUp()

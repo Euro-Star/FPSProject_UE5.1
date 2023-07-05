@@ -59,4 +59,5 @@ public:
 	TObjectPtr<AFPSProjectCharacter> GetPlayer();
 
 	void AddOtherCharacter(AOtherCharacter* _OtherCharacter, int32 Index);
+	inline TObjectPtr<AOtherCharacter> GetOtherCharacter(int32 Index);
 };
