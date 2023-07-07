@@ -78,5 +78,13 @@ void AFPSProjectGameState::AddOtherCharacter(AOtherCharacter* _OtherCharacter, i
 
 inline TObjectPtr<AOtherCharacter> AFPSProjectGameState::GetOtherCharacter(int32 Index)
 {
-	return OtherCharaterArray[Index];
+	if (OtherCharaterArray[Index])
+	{
+		return OtherCharaterArray[Index];
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("OtherCharacter Null"));
+		return nullptr;
+	}
 }

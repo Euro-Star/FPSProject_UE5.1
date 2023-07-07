@@ -32,6 +32,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	void Move();
+
 public:	
 	void Attacked();
 	void MoveForward(float Value);

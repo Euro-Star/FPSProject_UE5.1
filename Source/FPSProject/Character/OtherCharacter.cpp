@@ -27,6 +27,31 @@ void AOtherCharacter::BeginPlay()
 void AOtherCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	Move();
+}
+
+void AOtherCharacter::Move()
+{
+	if (bUp)
+	{
+		MoveForward(1.0f);
+	}
+	
+	if (bDown)
+	{
+		MoveForward(-1.0f);
+	}
+
+	if (bLeft)
+	{
+		MoveRight(-1.0f);
+	}
+
+	if (bRight)
+	{
+		MoveRight(1.0f);
+	}
 }
 
 

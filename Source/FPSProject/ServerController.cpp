@@ -91,5 +91,10 @@ void AServerController::PlayerMove(FRecvPacket_Wrapper& packetWrapper)
 
 void AServerController::PlayerRotation(FRecvPacket_Wrapper& packetWrapper)
 {
+	INIT_FUNCTION(PlayerRotation)
 
+	if(ptr)
+	{
+		GameState->GetOtherCharacter(ptr->PlayerId)->SetActorRotation(FRotator(0.0f, 0.0f, ptr->RotationY));
+	}
 }
