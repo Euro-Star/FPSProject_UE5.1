@@ -151,3 +151,20 @@ struct FRecvPacket_EnterGame
 	int32 PlayerId;
 };
 
+USTRUCT()
+struct FSendPacket_GameStart
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(GameStart)
+};
+
+USTRUCT()
+struct FSendPacket_Login
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(Login)
+
+	FString Id;
+};

@@ -19,16 +19,12 @@ class FPSPROJECT_API UFPSProjectGameInstance : public UGameInstance
 	
 public:
 	virtual void Init() override;
-
+	/* Server Code */
 	UFUNCTION()
 	void ConnectServer();
 
 	void DisConnectServer();
 	void ReConnectServer(FString ip, int32 tcpPort, int32 udpPort, int32 sessonid);
-
-
-	UPROPERTY()
-	class AFPSProjectCharacter* Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 	FString IP = "43.201.129.34";
@@ -46,6 +42,15 @@ public:
 	void RecvPacket(FString packetName, TSharedPtr<FJsonObject> jsonData, FString connectID);
 
 	TQueue<TSharedPtr<FRecvPacket_Wrapper>, EQueueMode::Mpsc> JsonQueue;
+
+	/* Server Code End */
+
+	UPROPERTY()
+	class AFPSProjectCharacter* Player;
+
+	UPROPERTY()
+	FString Id;
+
 
 public:
 	template<typename T>
@@ -72,4 +77,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EnterGame();
+
+	void SetId(FString _Id);
 };

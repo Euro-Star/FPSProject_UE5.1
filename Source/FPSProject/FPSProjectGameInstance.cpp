@@ -50,3 +50,8 @@ void UFPSProjectGameInstance::EnterGame()
 
 	SendData(S_EnterGame);
 }
+
+void UFPSProjectGameInstance::SetId(FString _Id)
+{
+	Id = _Id;
+}
