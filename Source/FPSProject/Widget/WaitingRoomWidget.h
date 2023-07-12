@@ -4,32 +4,34 @@
 
 #include "CoreMinimal.h"
 #include "Base/WidgetBase.h"
-#include "LoginWidget.generated.h"
+#include "WaitingRoomWidget.generated.h"
 
 /**
  * 
  */
-
-class UFPSProjectGameInstance;
-class UEditableTextBox;
 class UButton;
+class UScrollBox;
+
+struct FRoomInfo;
 
 UCLASS()
-class FPSPROJECT_API ULoginWidget : public UWidgetBase
+class FPSPROJECT_API UWaitingRoomWidget : public UWidgetBase
 {
 	GENERATED_BODY()
-	
+
 	virtual void NativeConstruct() override;
+	
 public:
+	//UPROPERTY()
+	//TArray<FRoomInfo> RoomInfoArray;
 
 	UPROPERTY(meta = (BindWidget))
-	UEditableTextBox* Edit_Id;
+	UScrollBox* RoomList;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* Btn_Login;
+	UButton* Btn_CreateRoom;
 
-private:
-
+public:
 	UFUNCTION()
-	void OnclickedLogin();
+	void ClickedCreateRoom();
 };

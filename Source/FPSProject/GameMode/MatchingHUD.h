@@ -10,6 +10,7 @@
  * 
  */
 class ULoginWidget;
+class UWaitingRoomWidget;
 
 UCLASS()
 class FPSPROJECT_API AMatchingHUD : public AHUD
@@ -25,4 +26,5 @@ public:
 
 public:
 	ULoginWidget* W_Login;
+	UWaitingRoomWidget* W_WaitingRoom;
 };

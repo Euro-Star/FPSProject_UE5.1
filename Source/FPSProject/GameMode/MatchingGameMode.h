@@ -15,4 +15,7 @@ class FPSPROJECT_API AMatchingGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 	AMatchingGameMode();
+
+public:
+	virtual void BeginPlay() override;
 };
