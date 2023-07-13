@@ -185,6 +185,34 @@ struct FSendPacket_RoomCreate
 };
 
 USTRUCT()
+struct FRecvPacket_RoomCreate
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	bool bCreate;
+
+	UPROPERTY()
+	int32 RoomNumber;
+};
+
+USTRUCT()
+struct FSendPacket_RequetRoomList
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(RequetRoomList)
+};
+
+USTRUCT()
+struct FRecvPacket_RoomList
+{
+	GENERATED_BODY()
+
+	TArray<FRoomInfo> RoomList;
+};
+
+USTRUCT()
 struct FRoomInfo
 {
 	GENERATED_BODY()
