@@ -171,12 +171,29 @@ struct FSendPacket_Login
 };
 
 USTRUCT()
+struct FSendPacket_RoomCreate
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(RoomCreate)
+
+	UPROPERTY()
+	FString Title;
+
+	UPROPERTY()
+	FString Id;
+};
+
+USTRUCT()
 struct FRoomInfo
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
 	FString Title;
+
+	UPROPERTY()
+	FString Id;
 
 	UPROPERTY()
 	int32 RoomNumber;

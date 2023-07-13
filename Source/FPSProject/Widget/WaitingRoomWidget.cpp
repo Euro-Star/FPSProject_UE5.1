@@ -2,6 +2,7 @@
 
 
 #include "Widget/WaitingRoomWidget.h"
+#include "Widget/CreateRoomWidget.h"
 #include "Components/ScrollBox.h"
 #include "Server/Packets.h"
 #include "Components/Button.h"
@@ -15,5 +16,5 @@ void UWaitingRoomWidget::NativeConstruct()
 
 void UWaitingRoomWidget::ClickedCreateRoom()
 {
-	// ¹æ ¸¸µå´Â À§Á¬¶ç¿ì±â
+	Hud->W_CreateRoom->AddToViewport();
 }

@@ -55,3 +55,8 @@ void UFPSProjectGameInstance::SetId(FString _Id)
 {
 	Id = _Id;
 }
+
+FString UFPSProjectGameInstance::GetId()
+{
+	return Id;
+}

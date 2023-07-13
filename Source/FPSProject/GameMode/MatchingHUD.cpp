@@ -4,6 +4,7 @@
 #include "GameMode/MatchingHUD.h"
 #include "Widget/LoginWidget.h"
 #include "Widget/WaitingRoomWidget.h"
+#include "Widget/CreateRoomWidget.h"
 
 AMatchingHUD::AMatchingHUD()
 {
@@ -19,6 +20,13 @@ AMatchingHUD::AMatchingHUD()
 	{
 		TSubclassOf<UWaitingRoomWidget> W_WaitingRoomClass = WaitingRoomWidget.Class;
 		W_WaitingRoom = CreateWidget<UWaitingRoomWidget>(GetWorld(), W_WaitingRoomClass);
+	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> CreateRoomWidget(TEXT("/Game/Blueprint/Widget/W_CreateRoom"));
+	if (CreateRoomWidget.Class != NULL)
+	{
+		TSubclassOf<UCreateRoomWidget> W_CreateRoomClass = CreateRoomWidget.Class;
+		W_CreateRoom = CreateWidget<UCreateRoomWidget>(GetWorld(), W_CreateRoomClass);
 	}
 }
 

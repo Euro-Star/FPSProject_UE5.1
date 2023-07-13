@@ -79,4 +79,5 @@ public:
 	void EnterGame();
 
 	void SetId(FString _Id);
+	FString GetId();
 };

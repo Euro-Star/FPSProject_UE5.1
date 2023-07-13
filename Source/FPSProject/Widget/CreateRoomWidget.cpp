@@ -1,0 +1,33 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Widget/CreateRoomWidget.h"
+#include "Components/Button.h"
+#include "Components/EditableTextBox.h"
+#include "Server/Packets.h"
+
+void UCreateRoomWidget::NativeConstruct()
+{
+	Btn_Create->OnClicked.AddUniqueDynamic(this, &UCreateRoomWidget::OnclickedCreate);
+	Btn_Close->OnClicked.AddUniqueDynamic(this, &UCreateRoomWidget::OnclickedClose);
+}
+
+void UCreateRoomWidget::OnclickedCreate()
+{
+	if (Edit_Title->Text.ToString() != "")
+	{
+		FSendPacket_RoomCreate S_RoomCreate;
+
+		S_RoomCreate.Id = Inst->GetId();
+		S_RoomCreate.Title = Edit_Title->Text.ToString();
+
+		Inst->SendData(S_RoomCreate);
+
+		this->RemoveFromViewport();
+	}
+}
+
+void UCreateRoomWidget::OnclickedClose()
+{
+	this->RemoveFromViewport();
+}
