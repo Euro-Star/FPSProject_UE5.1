@@ -11,10 +11,10 @@ void UWaitingRoomWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	Btn_CreateRoom->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidget::ClickedCreateRoom);
+	Btn_CreateRoom->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidget::OnclickedCreateRoom);
 }
 
-void UWaitingRoomWidget::ClickedCreateRoom()
+void UWaitingRoomWidget::OnclickedCreateRoom()
 {
 	Hud->W_CreateRoom->AddToViewport();
 }

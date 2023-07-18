@@ -4,34 +4,37 @@
 
 #include "CoreMinimal.h"
 #include "Base/WidgetBase.h"
-#include "WaitingRoomWidget.generated.h"
+#include "RoomWidget.generated.h"
 
 /**
  * 
  */
-class UButton;
-class UScrollBox;
 
-struct FRoomInfo;
+class UScrollBox;
+class UButton;
 
 UCLASS()
-class FPSPROJECT_API UWaitingRoomWidget : public UWidgetBase
+class FPSPROJECT_API URoomWidget : public UWidgetBase
 {
 	GENERATED_BODY()
 
 	virtual void NativeConstruct() override;
-	
+
 public:
-	//UPROPERTY()
-	//TArray<FRoomInfo> RoomInfoArray;
+	UPROPERTY(meta = (BindWidget))
+	UScrollBox* UserList;
 
 	UPROPERTY(meta = (BindWidget))
-	UScrollBox* RoomList;
+	UButton* Btn_GameStart;
 
-	UPROPERTY(meta = (BindWidget))
-	UButton* Btn_CreateRoom;
+	UPROPERTY()
+	TArray<FString> IdList;
+
+	UPROPERTY()
+	bool bRoomMaster = false;
 
 public:
 	UFUNCTION()
-	void OnclickedCreateRoom();
+	void OnclickedGameStart();
+	
 };

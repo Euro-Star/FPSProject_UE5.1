@@ -51,6 +51,8 @@ public:
 	UPROPERTY()
 	FString Id;
 
+	UPROPERTY()
+	int32 CurrentRoomNumber;
 
 public:
 	template<typename T>

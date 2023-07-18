@@ -17,6 +17,7 @@ void AServerController::BeginPlay()
 	Super::BeginPlay();
 
 	GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	Inst = Cast<UFPSProjectGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void AServerController::Tick(float DeltaTime)
@@ -96,5 +97,15 @@ void AServerController::PlayerRotation(FRecvPacket_Wrapper& packetWrapper)
 	if(ptr)
 	{
 		GameState->GetOtherCharacter(ptr->PlayerId)->SetActorRotation(FRotator(0.0f, 0.0f, ptr->RotationY));
+	}
+}
+
+void AServerController::RoomCreate(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(RoomCreate)
+		
+	if (ptr)
+	{
+
 	}
 }

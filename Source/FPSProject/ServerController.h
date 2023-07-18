@@ -41,11 +41,18 @@ protected:
 	UFUNCTION()
 	void PlayerRotation(FRecvPacket_Wrapper& packetWrapper);
 
+	UFUNCTION()
+	void RoomCreate(FRecvPacket_Wrapper& packetWrapper);
+
 private:
 	UPROPERTY()
 	TMap<FString, FPacketHandlerFunc> HandleFunc;
 
 	UPROPERTY()
 	TObjectPtr<AFPSProjectGameState> GameState;
+
+	UPROPERTY()
+	TObjectPtr<UFPSProjectGameInstance> Inst;
+
 	
 };

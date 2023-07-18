@@ -152,14 +152,6 @@ struct FRecvPacket_EnterGame
 };
 
 USTRUCT()
-struct FSendPacket_GameStart
-{
-	GENERATED_BODY()
-
-	PACKET_CONSTRUCT(GameStart)
-};
-
-USTRUCT()
 struct FSendPacket_Login
 {
 	GENERATED_BODY()
@@ -210,6 +202,17 @@ struct FRecvPacket_RoomList
 	GENERATED_BODY()
 
 	TArray<FRoomInfo> RoomList;
+};
+
+USTRUCT()
+struct FSendPacket_GameStart
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(GameStart)
+	
+	UPROPERTY()
+	int32 RoomNumber;
 };
 
 USTRUCT()
