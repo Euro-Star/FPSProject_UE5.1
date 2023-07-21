@@ -16,5 +16,5 @@ void UWaitingRoomWidget::NativeConstruct()
 
 void UWaitingRoomWidget::OnclickedCreateRoom()
 {
-	Hud->W_CreateRoom->AddToViewport();
+	MatchingHud->AddScreen(EMatchingWidget::CreateRoom);
 }

@@ -8,6 +8,7 @@
 #include <JsonObjectConverter.h>
 #include <FPSProjectGameState.h>
 #include <FPSGameplayStatics.h>
+#include <GameMode/MatchingHUD.h>
 #include <Character/FPSProjectCharacter.h>
 #include <Character/OtherCharacter.h>
 #include <Manager/SpawnPoint.h>
@@ -106,6 +107,14 @@ void AServerController::RoomCreate(FRecvPacket_Wrapper& packetWrapper)
 		
 	if (ptr)
 	{
-
+		if (ptr->bCreate)
+		{
+			if (!MatchingHud)
+			{
+				MatchingHud = Cast<AMatchingHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+			}
+			
+			//MatchingHud->
+		}
 	}
 }

@@ -5,6 +5,8 @@
 #include "Widget/LoginWidget.h"
 #include "Widget/WaitingRoomWidget.h"
 #include "Widget/CreateRoomWidget.h"
+#include "Widget/RoomWidget.h"
+#include "Base/WidgetBase.h"
 
 AMatchingHUD::AMatchingHUD()
 {
@@ -28,6 +30,13 @@ AMatchingHUD::AMatchingHUD()
 		TSubclassOf<UCreateRoomWidget> W_CreateRoomClass = CreateRoomWidget.Class;
 		W_CreateRoom = CreateWidget<UCreateRoomWidget>(GetWorld(), W_CreateRoomClass);
 	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> RoomWidget(TEXT("/Game/Blueprint/Widget/W_Room"));
+	if (RoomWidget.Class != NULL)
+	{
+		TSubclassOf<URoomWidget> W_RoomClass = RoomWidget.Class;
+		W_Room = CreateWidget<URoomWidget>(GetWorld(), W_RoomClass);
+	}
 }
 
 void AMatchingHUD::DrawHUD()
@@ -39,5 +48,66 @@ void AMatchingHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	W_Login->AddToViewport();
+	AddScreen(EMatchingWidget::Login);
 }
+
+void AMatchingHUD::AddScreen(EMatchingWidget _Widget)
+{
+	switch (_Widget)
+	{
+	case EMatchingWidget::Login:
+	{
+		W_Login->AddToViewport();
+		break;
+	}
+	case EMatchingWidget::CreateRoom:
+	{
+		W_CreateRoom->AddToViewport();
+		break;
+	}
+	case EMatchingWidget::WaitingRoom:
+	{
+		W_WaitingRoom->AddToViewport();
+		break;
+	}
+	case EMatchingWidget::Room:
+	{
+		W_Room->AddToViewport();
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void AMatchingHUD::RemoveScreen(EMatchingWidget _Widget)
+{
+	switch (_Widget)
+	{
+	case EMatchingWidget::Login:
+	{
+		W_Login->RemoveFromViewport();
+		break;
+	}
+	case EMatchingWidget::CreateRoom:
+	{
+		W_CreateRoom->RemoveFromViewport();
+		break;
+	}
+	case EMatchingWidget::WaitingRoom:
+	{
+		W_WaitingRoom->RemoveFromViewport();
+		break;
+	}
+	case EMatchingWidget::Room:
+	{
+		W_Room->RemoveFromViewport();
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+
+

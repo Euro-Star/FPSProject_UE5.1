@@ -27,7 +27,7 @@ void ULoginWidget::OnclickedLogin()
 
 		Inst->SetId(Edit_Id->GetText().ToString());
 
-		Hud->W_WaitingRoom->AddToViewport();
-		Hud->W_Login->RemoveFromViewport();
+		MatchingHud->AddScreen(EMatchingWidget::WaitingRoom);
+		MatchingHud->RemoveScreen(EMatchingWidget::Login);
 	}	
 }

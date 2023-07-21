@@ -28,3 +28,12 @@ enum class EInputKey : uint8
 	Left,
 	Right
 };
+
+UENUM(BlueprintType)
+enum class EMatchingWidget : uint8
+{
+	Login,
+	CreateRoom,
+	WaitingRoom,
+	Room,
+};

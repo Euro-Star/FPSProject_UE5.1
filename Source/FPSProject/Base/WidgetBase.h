@@ -25,5 +25,5 @@ public:
 	UFPSProjectGameInstance* Inst;
 
 	UPROPERTY()
-	AMatchingHUD* Hud;
+	AMatchingHUD* MatchingHud;
 };

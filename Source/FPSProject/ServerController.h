@@ -12,6 +12,8 @@
  */
 
 class AFPSProjectGameState;
+class UFPSProjectGameInstance;
+class AMatchingHUD;
 
 UCLASS()
 class FPSPROJECT_API AServerController : public APlayerController, public IPacketExecutor
@@ -54,5 +56,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UFPSProjectGameInstance> Inst;
 
+	UPROPERTY()
+	TObjectPtr<AMatchingHUD> MatchingHud;
 	
 };
