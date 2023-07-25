@@ -6,12 +6,33 @@
 #include "Components/ScrollBox.h"
 #include "Server/Packets.h"
 #include "Components/Button.h"
+#include "Widget/WaitingRoomWidgetEntry.h"
+
+UWaitingRoomWidget::UWaitingRoomWidget()
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget> LoginWidget(TEXT("/Game/Blueprint/Widget/W_WaitingRoomEntry"));
+	if (LoginWidget.Class != NULL)
+	{
+		W_WaitingRoomEntry = LoginWidget.Class;	
+	}
+}
 
 void UWaitingRoomWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	Btn_CreateRoom->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidget::OnclickedCreateRoom);
+
+	FRoomInfo test;
+	test.NumberOfPeople = 0;
+	test.Title = "test";
+	test.RoomNumber = 1;
+
+	UWaitingRoomWidgetEntry* test1 = Cast<UWaitingRoomWidgetEntry>(CreateWidget(GetWorld(), W_WaitingRoomEntry));
+
+	test1->SetRoomInfo(test);
+
+	RoomList->AddChild(test1);
 }
 
 void UWaitingRoomWidget::OnclickedCreateRoom()

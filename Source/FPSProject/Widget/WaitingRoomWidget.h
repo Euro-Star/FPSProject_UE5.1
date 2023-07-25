@@ -11,6 +11,7 @@
  */
 class UButton;
 class UScrollBox;
+class UWaitingRoomWidgetEntry;
 
 struct FRoomInfo;
 
@@ -18,6 +19,8 @@ UCLASS()
 class FPSPROJECT_API UWaitingRoomWidget : public UWidgetBase
 {
 	GENERATED_BODY()
+
+	UWaitingRoomWidget();
 
 	virtual void NativeConstruct() override;
 	
@@ -30,6 +33,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* Btn_CreateRoom;
+
+	UPROPERTY()
+	TSubclassOf<UWaitingRoomWidgetEntry> W_WaitingRoomEntry;
 
 public:
 	UFUNCTION()

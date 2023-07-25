@@ -224,11 +224,22 @@ struct FRoomInfo
 	FString Title;
 
 	UPROPERTY()
-	FString Id;
-
-	UPROPERTY()
 	int32 RoomNumber;
 
 	UPROPERTY()
 	int32 NumberOfPeople;
+};
+
+USTRUCT()
+struct FSendPacket_RoomEnter
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(RoomEnter)
+
+	UPROPERTY()
+	FString Id;
+
+	UPROPERTY()
+	int32 RoomNumber;
 };
