@@ -12,6 +12,10 @@
 /**
  * 
  */
+
+// 테스트 클래스
+class ATestServerPacket;
+
 UCLASS()
 class FPSPROJECT_API UFPSProjectGameInstance : public UGameInstance
 {
@@ -53,6 +57,12 @@ public:
 
 	UPROPERTY()
 	int32 CurrentRoomNumber;
+
+	// 테스트 서버
+	UPROPERTY()
+	ATestServerPacket* TestServerPack;
+
+	ATestServerPacket* GetTest();
 
 public:
 	template<typename T>

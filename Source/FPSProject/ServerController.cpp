@@ -12,6 +12,7 @@
 #include <Character/FPSProjectCharacter.h>
 #include <Character/OtherCharacter.h>
 #include <Manager/SpawnPoint.h>
+#include <Widget/RoomWidget.h>
 
 void AServerController::BeginPlay()
 {
@@ -114,7 +115,9 @@ void AServerController::RoomCreate(FRecvPacket_Wrapper& packetWrapper)
 				MatchingHud = Cast<AMatchingHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 			}
 			
-			//MatchingHud->
+			MatchingHud->W_Room->SetRoomStatus(ptr->bCreate, ptr->RoomNumber);
+			MatchingHud->AddScreen(EMatchingWidget::Room);
+			MatchingHud->RemoveScreen(EMatchingWidget::WaitingRoom);
 		}
 	}
 }

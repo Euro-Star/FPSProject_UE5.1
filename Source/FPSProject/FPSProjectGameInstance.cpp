@@ -4,6 +4,7 @@
 #include "FPSProjectGameInstance.h"
 #include <SocketClient/Public/PacketExecutor.h>
 #include "Server/Packets.h"
+#include "TestServerPacket.h"
 
 void UFPSProjectGameInstance::Init()
 {
@@ -13,6 +14,8 @@ void UFPSProjectGameInstance::Init()
 
 	USocketClientBPLibrary::GetSocketClientTarget()->OnReceiveTCPMessageEventDelegate.AddUObject(this, &UFPSProjectGameInstance::RecvPacket);
 	USocketClientBPLibrary::GetSocketClientTarget()->OnReceiveUDPMessageEventDelegate.AddUObject(this, &UFPSProjectGameInstance::RecvPacket);
+
+	TestServerPack = GetWorld()->SpawnActor<ATestServerPacket>(ATestServerPacket::StaticClass());
 }
 
 void UFPSProjectGameInstance::ConnectServer()
@@ -42,6 +45,11 @@ void UFPSProjectGameInstance::RecvPacket(FString packetName, TSharedPtr<FJsonObj
 			UE_LOG(LogTemp, Error, TEXT("ERROR Failed to Packet Enqueue"));
 		}
 	}
+}
+
+ATestServerPacket* UFPSProjectGameInstance::GetTest()
+{
+	return TestServerPack;
 }
 
 void UFPSProjectGameInstance::EnterGame()

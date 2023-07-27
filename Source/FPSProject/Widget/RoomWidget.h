@@ -13,12 +13,23 @@
 class UScrollBox;
 class UButton;
 
+class URoomWidgetEntry;
+
 UCLASS()
 class FPSPROJECT_API URoomWidget : public UWidgetBase
 {
 	GENERATED_BODY()
 
+	URoomWidget();
+
 	virtual void NativeConstruct() override;
+
+protected:
+	UPROPERTY()
+	bool bRoomMaster = false;
+
+	UPROPERTY()
+	int32 RoomNumber;
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -31,10 +42,11 @@ public:
 	TArray<FString> IdList;
 
 	UPROPERTY()
-	bool bRoomMaster = false;
+	TSubclassOf<URoomWidgetEntry> W_RoomEntry;
 
 public:
 	UFUNCTION()
 	void OnclickedGameStart();
-	
+
+	void SetRoomStatus(bool _bRoomMaster, int32 _RoomNumber);
 };

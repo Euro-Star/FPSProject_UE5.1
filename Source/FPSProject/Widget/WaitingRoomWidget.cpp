@@ -10,10 +10,10 @@
 
 UWaitingRoomWidget::UWaitingRoomWidget()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> LoginWidget(TEXT("/Game/Blueprint/Widget/W_WaitingRoomEntry"));
-	if (LoginWidget.Class != NULL)
+	static ConstructorHelpers::FClassFinder<UUserWidget> WaitingRoomWidgetEntry(TEXT("/Game/Blueprint/Widget/W_WaitingRoomEntry"));
+	if (WaitingRoomWidgetEntry.Class != NULL)
 	{
-		W_WaitingRoomEntry = LoginWidget.Class;	
+		W_WaitingRoomEntry = WaitingRoomWidgetEntry.Class;
 	}
 }
 
@@ -28,11 +28,11 @@ void UWaitingRoomWidget::NativeConstruct()
 	test.Title = "test";
 	test.RoomNumber = 1;
 
-	UWaitingRoomWidgetEntry* test1 = Cast<UWaitingRoomWidgetEntry>(CreateWidget(GetWorld(), W_WaitingRoomEntry));
-
-	test1->SetRoomInfo(test);
-
-	RoomList->AddChild(test1);
+	//UWaitingRoomWidgetEntry* test1 = Cast<UWaitingRoomWidgetEntry>(CreateWidget(GetWorld(), W_WaitingRoomEntry));
+	//
+	//test1->SetRoomInfo(test);
+	//
+	//RoomList->AddChild(test1);
 }
 
 void UWaitingRoomWidget::OnclickedCreateRoom()
