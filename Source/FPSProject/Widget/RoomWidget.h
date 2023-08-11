@@ -49,4 +49,6 @@ public:
 	void OnclickedGameStart();
 
 	void SetRoomStatus(bool _bRoomMaster, int32 _RoomNumber);
+	void InitRoomUser(TArray<FString> Id);
+	void AddRoomUser(FString Id);
 };

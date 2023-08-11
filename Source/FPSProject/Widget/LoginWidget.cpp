@@ -19,14 +19,14 @@ void ULoginWidget::OnclickedLogin()
 {
 	if (Edit_Id->GetText().ToString() != "")
 	{
-		//FSendPacket_Login S_Login;
-		//
-		//S_Login.Id = Edit_Id->GetText().ToString();;
-		//
-		//Inst->SendData(S_Login);
+		FSendPacket_Login S_Login;
+		
+		S_Login.Id = Edit_Id->GetText().ToString();;
+		
+		Inst->SendData(S_Login);
 
 		Inst->SetId(Edit_Id->GetText().ToString());
-
+		
 		MatchingHud->AddScreen(EMatchingWidget::WaitingRoom);
 		MatchingHud->RemoveScreen(EMatchingWidget::Login);
 	}	

@@ -20,6 +20,8 @@ class FPSPROJECT_API AServerController : public APlayerController, public IPacke
 {
 	GENERATED_BODY()
 
+	AServerController();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -45,6 +47,12 @@ protected:
 
 	UFUNCTION()
 	void RoomCreate(FRecvPacket_Wrapper& packetWrapper);
+
+	UFUNCTION()
+	void RoomList(FRecvPacket_Wrapper& packetWrapper);
+
+	UFUNCTION()
+	void InRoomUser(FRecvPacket_Wrapper& packetWrapper);
 
 private:
 	UPROPERTY()

@@ -31,7 +31,7 @@ public:
 	void ReConnectServer(FString ip, int32 tcpPort, int32 udpPort, int32 sessonid);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
-	FString IP = "43.201.129.34";
+	FString IP = "52.79.81.8";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 	int32 TCPPort = 1998;	

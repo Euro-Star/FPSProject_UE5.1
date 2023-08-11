@@ -7,6 +7,7 @@
 #include "Widget/CreateRoomWidget.h"
 #include "Widget/RoomWidget.h"
 #include "Base/WidgetBase.h"
+#include "Server/Packets.h"
 
 AMatchingHUD::AMatchingHUD()
 {

@@ -13,6 +13,13 @@
 #include <Character/OtherCharacter.h>
 #include <Manager/SpawnPoint.h>
 #include <Widget/RoomWidget.h>
+#include <Widget/WaitingRoomWidget.h>
+
+AServerController::AServerController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+}
 
 void AServerController::BeginPlay()
 {
@@ -56,6 +63,7 @@ void AServerController::EnterGame(FRecvPacket_Wrapper& packetWrapper)
 	if (ptr)
 	{
 		GameState->SetPlayerId(ptr->PlayerId);
+		GameState->bTest = true;
 	}
 }
 
@@ -119,5 +127,28 @@ void AServerController::RoomCreate(FRecvPacket_Wrapper& packetWrapper)
 			MatchingHud->AddScreen(EMatchingWidget::Room);
 			MatchingHud->RemoveScreen(EMatchingWidget::WaitingRoom);
 		}
+	}
+}
+
+void AServerController::RoomList(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(RoomList)
+
+	if(ptr)
+	{
+		if (ptr->RoomList.GetData())
+		{
+			MatchingHud->W_WaitingRoom->InitRoomList(ptr->RoomList);
+		}
+	}
+}
+
+void AServerController::InRoomUser(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(InRoomUser)
+
+	if (ptr)
+	{
+		MatchingHud->W_Room->AddRoomUser(ptr->Id);
 	}
 }

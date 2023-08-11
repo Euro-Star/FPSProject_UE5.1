@@ -189,11 +189,11 @@ struct FRecvPacket_RoomCreate
 };
 
 USTRUCT()
-struct FSendPacket_RequetRoomList
+struct FSendPacket_RequestRoomList
 {
 	GENERATED_BODY()
 
-	PACKET_CONSTRUCT(RequetRoomList)
+	PACKET_CONSTRUCT(RequestRoomList)
 };
 
 USTRUCT()
@@ -224,6 +224,9 @@ struct FRoomInfo
 	FString Title;
 
 	UPROPERTY()
+	FString Id;
+
+	UPROPERTY()
 	int32 RoomNumber;
 
 	UPROPERTY()
@@ -242,4 +245,22 @@ struct FSendPacket_RoomEnter
 
 	UPROPERTY()
 	int32 RoomNumber;
+};
+
+USTRUCT()
+struct FRecvPacket_RoomEnter
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<FString> Id;
+};
+
+USTRUCT()
+struct FRecvPacket_InRoomUser
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString Id;
 };

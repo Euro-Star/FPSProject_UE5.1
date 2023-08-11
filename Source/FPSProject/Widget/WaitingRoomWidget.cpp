@@ -22,11 +22,15 @@ void UWaitingRoomWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	Btn_CreateRoom->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidget::OnclickedCreateRoom);
+	Btn_RefreshRoom->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidget::OnclickedRefreshRoom);
 
-	FRoomInfo test;
-	test.NumberOfPeople = 0;
-	test.Title = "test";
-	test.RoomNumber = 1;
+	FSendPacket_RequestRoomList S_RequestRoomList;
+	Inst->SendData(S_RequestRoomList);
+
+	//FRoomInfo test;
+	//test.NumberOfPeople = 0;
+	//test.Title = "test";
+	//test.RoomNumber = 1;
 
 	//UWaitingRoomWidgetEntry* test1 = Cast<UWaitingRoomWidgetEntry>(CreateWidget(GetWorld(), W_WaitingRoomEntry));
 	//
@@ -38,4 +42,31 @@ void UWaitingRoomWidget::NativeConstruct()
 void UWaitingRoomWidget::OnclickedCreateRoom()
 {
 	MatchingHud->AddScreen(EMatchingWidget::CreateRoom);
+}
+
+void UWaitingRoomWidget::OnclickedRefreshRoom()
+{
+	FSendPacket_RequestRoomList S_RequestRoomList;
+
+	Inst->SendData(S_RequestRoomList);
+}
+
+void UWaitingRoomWidget::InitRoomList(TArray<FRoomInfo> _RoomInfo)
+{
+	RoomInfoArray = _RoomInfo;
+
+	RefreshRoomList();
+}
+
+void UWaitingRoomWidget::RefreshRoomList()
+{
+	RoomList->ClearChildren();
+
+	for (auto it : RoomInfoArray)
+	{
+		UWaitingRoomWidgetEntry* Entry = Cast<UWaitingRoomWidgetEntry>(CreateWidget(GetWorld(), W_WaitingRoomEntry));
+
+		Entry->SetRoomInfo(it);
+		RoomList->AddChild(Entry);
+	}
 }

@@ -43,3 +43,27 @@ void URoomWidget::SetRoomStatus(bool _bRoomMaster, int32 _RoomNumber)
 	bRoomMaster = _bRoomMaster;
 	RoomNumber = _RoomNumber;
 }
+
+void URoomWidget::InitRoomUser(TArray<FString> _IdList)
+{
+	IdList = _IdList;
+
+	for (auto it : IdList)
+	{
+		URoomWidgetEntry* Entry = Cast<URoomWidgetEntry>(CreateWidget(GetWorld(), W_RoomEntry));
+
+		Entry->SetTextId(it);
+		UserList->AddChild(Entry);
+	}
+}
+
+void URoomWidget::AddRoomUser(FString Id)
+{
+	IdList.Add(Id);
+
+	URoomWidgetEntry* Entry = Cast<URoomWidgetEntry>(CreateWidget(GetWorld(), W_RoomEntry));
+
+	Entry->SetTextId(Id);
+	UserList->AddChild(Entry);
+}
+

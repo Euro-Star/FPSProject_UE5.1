@@ -60,4 +60,7 @@ public:
 
 	void AddOtherCharacter(AOtherCharacter* _OtherCharacter, int32 Index);
 	inline TObjectPtr<AOtherCharacter> GetOtherCharacter(int32 Index);
+
+	UPROPERTY()
+	bool bTest = false;
 };

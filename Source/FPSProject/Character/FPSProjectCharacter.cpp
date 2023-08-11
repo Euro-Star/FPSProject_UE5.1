@@ -19,7 +19,9 @@
 #include "Widget/GamePlayWidget.h"
 #include "Enum/GameEnum.h"
 #include <Server/Packets.h>
-#include <FPSProjectGameInstance.h>
+#include <FPSProjectGameState.h>
+#include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -315,17 +317,32 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPSProjectCharacter::LookUpAtRate);
 
 	// 키 인식 서버로 보냄(이동 동기화)
-	PlayerInputComponent->BindAction("Up", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveUp);
-	PlayerInputComponent->BindAction("Up", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveUp);
 
-	PlayerInputComponent->BindAction("Down", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveDown);
-	PlayerInputComponent->BindAction("Down", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveDown);
+	if (Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld())))
+	{
+		PlayerInputComponent->BindAction("Up", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveUp);
+		PlayerInputComponent->BindAction("Up", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveUp);
 
-	PlayerInputComponent->BindAction("Left", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveLeft);
-	PlayerInputComponent->BindAction("Left", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveLeft);
+		PlayerInputComponent->BindAction("Down", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveDown);
+		PlayerInputComponent->BindAction("Down", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveDown);
 
-	PlayerInputComponent->BindAction("Right", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveRight);
-	PlayerInputComponent->BindAction("Right", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveRight);
+		PlayerInputComponent->BindAction("Left", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveLeft);
+		PlayerInputComponent->BindAction("Left", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveLeft);
+
+		PlayerInputComponent->BindAction("Right", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveRight);
+		PlayerInputComponent->BindAction("Right", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveRight);
+	}
+	//PlayerInputComponent->BindAction("Up", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveUp);
+	//PlayerInputComponent->BindAction("Up", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveUp);
+	//
+	//PlayerInputComponent->BindAction("Down", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveDown);
+	//PlayerInputComponent->BindAction("Down", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveDown);
+	//
+	//PlayerInputComponent->BindAction("Left", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveLeft);
+	//PlayerInputComponent->BindAction("Left", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveLeft);
+	//
+	//PlayerInputComponent->BindAction("Right", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveRight);
+	//PlayerInputComponent->BindAction("Right", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveRight);
 }
 
 void AFPSProjectCharacter::OnFire()

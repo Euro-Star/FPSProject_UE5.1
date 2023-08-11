@@ -34,10 +34,28 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* Btn_CreateRoom;
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* Btn_RefreshRoom;
+
+private:
 	UPROPERTY()
 	TSubclassOf<UWaitingRoomWidgetEntry> W_WaitingRoomEntry;
 
+	//UPROPERTY()
+	//TArray<UWaitingRoomWidgetEntry> RoomEntryList;
+
+	UPROPERTY()
+	TArray<FRoomInfo> RoomInfoArray;
 public:
 	UFUNCTION()
 	void OnclickedCreateRoom();
+
+	UFUNCTION()
+	void OnclickedRefreshRoom();
+
+	UFUNCTION()
+	void InitRoomList(TArray<FRoomInfo> _RoomInfo);
+
+	UFUNCTION()
+	void RefreshRoomList();
 };
