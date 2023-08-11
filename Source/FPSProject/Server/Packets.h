@@ -197,10 +197,29 @@ struct FSendPacket_RequestRoomList
 };
 
 USTRUCT()
+struct FRoomInfo
+{
+	GENERATED_BODY()
+
+		UPROPERTY()
+		FString Title;
+
+	UPROPERTY()
+		FString Id;
+
+	UPROPERTY()
+		int32 RoomNumber;
+
+	UPROPERTY()
+		int32 NumberOfPeople;
+};
+
+USTRUCT()
 struct FRecvPacket_RoomList
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
 	TArray<FRoomInfo> RoomList;
 };
 
@@ -215,23 +234,6 @@ struct FSendPacket_GameStart
 	int32 RoomNumber;
 };
 
-USTRUCT()
-struct FRoomInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FString Title;
-
-	UPROPERTY()
-	FString Id;
-
-	UPROPERTY()
-	int32 RoomNumber;
-
-	UPROPERTY()
-	int32 NumberOfPeople;
-};
 
 USTRUCT()
 struct FSendPacket_RoomEnter
