@@ -7,7 +7,4 @@
 void UWidgetBase::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	Inst = Cast<UFPSProjectGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	MatchingHud = Cast<AMatchingHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 }

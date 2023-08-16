@@ -10,11 +10,6 @@
 /**
  * 
  */
-class UWidgetBase;
-class ULoginWidget;
-class UWaitingRoomWidget;
-class UCreateRoomWidget;
-class URoomWidget;
 
 UCLASS()
 class FPSPROJECT_API AMatchingHUD : public AHUD
@@ -27,24 +22,4 @@ public:
 
 	virtual void DrawHUD() override;
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
-	void AddScreen(EMatchingWidget _Widget);
-
-	UFUNCTION()
-	void RemoveScreen(EMatchingWidget _Widget);
-
-public:
-	UPROPERTY()
-	ULoginWidget* W_Login;
-
-	UPROPERTY()
-	UWaitingRoomWidget* W_WaitingRoom;
-
-	UPROPERTY()
-	UCreateRoomWidget* W_CreateRoom;
-
-	UPROPERTY()
-	URoomWidget* W_Room;
-
 };

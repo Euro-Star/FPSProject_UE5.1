@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Widget/WaitingRoomWidget.h"
+#include "Manager/WidgetManager.h"
 
 void ULoginWidget::NativeConstruct()
 {
@@ -23,11 +24,10 @@ void ULoginWidget::OnclickedLogin()
 		
 		S_Login.Id = Edit_Id->GetText().ToString();;
 		
-		Inst->SendData(S_Login);
+		UFPSProjectGameInstance::Getinstance()->SendData(S_Login);
+		UFPSProjectGameInstance::Getinstance()->SetId(Edit_Id->GetText().ToString());
 
-		Inst->SetId(Edit_Id->GetText().ToString());
-		
-		MatchingHud->AddScreen(EMatchingWidget::WaitingRoom);
-		MatchingHud->RemoveScreen(EMatchingWidget::Login);
-	}	
+		UWidgetManager::Get()->AddWidget(EWidget::WaitingRoom);
+		UWidgetManager::Get()->RemoveWidget(EWidget::Login);
+	}
 }

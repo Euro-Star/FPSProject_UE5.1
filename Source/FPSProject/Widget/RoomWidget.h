@@ -28,9 +28,6 @@ protected:
 	UPROPERTY()
 	bool bRoomMaster = false;
 
-	UPROPERTY()
-	int32 RoomNumber;
-
 public:
 	UPROPERTY(meta = (BindWidget))
 	UScrollBox* UserList;
@@ -48,7 +45,7 @@ public:
 	UFUNCTION()
 	void OnclickedGameStart();
 
-	void SetRoomStatus(bool _bRoomMaster, int32 _RoomNumber);
+	void SetRoomStatus(bool _bRoomMaster);
 	void InitRoomUser(TArray<FString> Id);
 	void AddRoomUser(FString Id);
 };

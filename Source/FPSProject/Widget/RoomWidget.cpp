@@ -33,15 +33,14 @@ void URoomWidget::OnclickedGameStart()
 {
 	FSendPacket_GameStart S_GameStart;
 
-	// 게임 시작 필요한거 상의 하기
+	S_GameStart.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
 
-	Inst->SendData(S_GameStart);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_GameStart);
 }
 
-void URoomWidget::SetRoomStatus(bool _bRoomMaster, int32 _RoomNumber)
+void URoomWidget::SetRoomStatus(bool _bRoomMaster)
 {
 	bRoomMaster = _bRoomMaster;
-	RoomNumber = _RoomNumber;
 }
 
 void URoomWidget::InitRoomUser(TArray<FString> _IdList)

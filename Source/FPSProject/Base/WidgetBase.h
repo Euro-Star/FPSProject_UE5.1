@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include <FPSProjectGameInstance.h>
-#include <GameMode/MatchingHUD.h>
+#include "Game/FPSProjectGameInstance.h"
 #include "WidgetBase.generated.h"
 
 /**
@@ -21,9 +20,5 @@ public:
 	virtual void NativeConstruct() override;
 
 public:
-	UPROPERTY()
-	UFPSProjectGameInstance* Inst;
 
-	UPROPERTY()
-	AMatchingHUD* MatchingHud;
 };

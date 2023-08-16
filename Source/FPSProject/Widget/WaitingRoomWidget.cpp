@@ -7,6 +7,7 @@
 #include "Server/Packets.h"
 #include "Components/Button.h"
 #include "Widget/WaitingRoomWidgetEntry.h"
+#include "Manager/WidgetManager.h"
 
 UWaitingRoomWidget::UWaitingRoomWidget()
 {
@@ -25,7 +26,7 @@ void UWaitingRoomWidget::NativeConstruct()
 	Btn_RefreshRoom->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidget::OnclickedRefreshRoom);
 
 	FSendPacket_RequestRoomList S_RequestRoomList;
-	Inst->SendData(S_RequestRoomList);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_RequestRoomList);
 
 	//FRoomInfo test;
 	//test.NumberOfPeople = 0;
@@ -41,14 +42,14 @@ void UWaitingRoomWidget::NativeConstruct()
 
 void UWaitingRoomWidget::OnclickedCreateRoom()
 {
-	MatchingHud->AddScreen(EMatchingWidget::CreateRoom);
+	UWidgetManager::Get()->AddWidget(EWidget::CreateRoom);
 }
 
 void UWaitingRoomWidget::OnclickedRefreshRoom()
 {
 	FSendPacket_RequestRoomList S_RequestRoomList;
 
-	Inst->SendData(S_RequestRoomList);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_RequestRoomList);
 }
 
 void UWaitingRoomWidget::InitRoomList(TArray<FRoomInfo> _RoomInfo)

@@ -201,17 +201,17 @@ struct FRoomInfo
 {
 	GENERATED_BODY()
 
-		UPROPERTY()
-		FString Title;
+	UPROPERTY()
+	FString Title;
 
 	UPROPERTY()
-		FString Id;
+	FString Id;
 
 	UPROPERTY()
-		int32 RoomNumber;
+	int32 RoomNumber;
 
 	UPROPERTY()
-		int32 NumberOfPeople;
+	int32 NumberOfPeople;
 };
 
 USTRUCT()
@@ -234,6 +234,12 @@ struct FSendPacket_GameStart
 	int32 RoomNumber;
 };
 
+USTRUCT()
+struct FRecvPacket_GameStart
+{
+	GENERATED_BODY()
+
+};
 
 USTRUCT()
 struct FSendPacket_RoomEnter

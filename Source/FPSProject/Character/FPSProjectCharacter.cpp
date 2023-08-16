@@ -15,13 +15,15 @@
 #include "Base/BulletBase.h"
 #include "Manager/BulletManager.h"
 #include "DrawDebugHelpers.h"
-#include "FPSProjectHUD.h"
+#include "Game/FPSProjectHUD.h"
 #include "Widget/GamePlayWidget.h"
 #include "Enum/GameEnum.h"
 #include <Server/Packets.h>
-#include <FPSProjectGameState.h>
+#include <Game/FPSProjectGameState.h>
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
+#include "Manager/WidgetManager.h"
+#include "Game/FPSProjectGameInstance.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -121,7 +123,7 @@ void AFPSProjectCharacter::BeginPlay()
 	SetTPSCharacter();
 
 	HUD = Cast<AFPSProjectHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
-	GamePlayWidget = HUD->W_GamePlay;
+	GamePlayWidget = UWidgetManager::Get()->GetWidget<UGamePlayWidget>(EWidget::GamePlay);
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
@@ -138,8 +140,6 @@ void AFPSProjectCharacter::BeginPlay()
 	{
 		FPS_CharacterMesh->SetHiddenInGame(false, true);
 	}
-
-	Inst = Cast<UFPSProjectGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void AFPSProjectCharacter::Tick(float DeltaTime)
@@ -169,7 +169,7 @@ float AFPSProjectCharacter::SendPlayerRotation()
 	S_PlayerRotation.PlayerId = 0;
 	S_PlayerRotation.RotationY = PlayerRotation_Y;
 
-	Inst->SendData(S_PlayerRotation);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerRotation);
 
 	return PlayerRotation_Y;
 }
@@ -184,7 +184,7 @@ void AFPSProjectCharacter::SendPressPlayerMoveUp()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveDown()
@@ -197,7 +197,7 @@ void AFPSProjectCharacter::SendPressPlayerMoveDown()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveLeft()
@@ -210,7 +210,7 @@ void AFPSProjectCharacter::SendPressPlayerMoveLeft()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveRight()
@@ -223,7 +223,7 @@ void AFPSProjectCharacter::SendPressPlayerMoveRight()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveUp()
@@ -236,7 +236,7 @@ void AFPSProjectCharacter::SendReleasePlayerMoveUp()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveDown()
@@ -249,7 +249,7 @@ void AFPSProjectCharacter::SendReleasePlayerMoveDown()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveLeft()
@@ -262,7 +262,7 @@ void AFPSProjectCharacter::SendReleasePlayerMoveLeft()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveRight()
@@ -275,7 +275,7 @@ void AFPSProjectCharacter::SendReleasePlayerMoveRight()
 	S_PlayerMove.PlayerId = 0;
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 
-	Inst->SendData(S_PlayerMove);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
 
 //////////////////////////////////////////////////////////////////////////

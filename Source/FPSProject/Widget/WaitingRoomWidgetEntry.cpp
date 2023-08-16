@@ -23,8 +23,8 @@ void UWaitingRoomWidgetEntry::OnclickedRoomEnter()
 {
 	FSendPacket_RoomEnter S_RoomEnter;
 
-	S_RoomEnter.Id = Inst->GetId();
+	S_RoomEnter.Id = UFPSProjectGameInstance::Getinstance()->GetId();
 	S_RoomEnter.RoomNumber = RoomNumber;
 
-	Inst->SendData(S_RoomEnter);
+	UFPSProjectGameInstance::Getinstance()->SendData(S_RoomEnter);
 }

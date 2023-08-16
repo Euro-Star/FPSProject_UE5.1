@@ -26,9 +26,6 @@ private:
 	TObjectPtr<AFPSProjectGameState> GameState;
 
 	UPROPERTY()
-	TObjectPtr<UFPSProjectGameInstance> Inst;
-
-	UPROPERTY()
 	TObjectPtr<AMatchingHUD> MatchingHud;
 
 public:	

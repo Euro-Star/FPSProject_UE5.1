@@ -125,9 +125,6 @@ protected:
 
 	UPROPERTY()
 	float Interval = 0.05f;
-
-	UPROPERTY()
-	class UFPSProjectGameInstance* Inst;
 public:
 	AFPSProjectCharacter();
 

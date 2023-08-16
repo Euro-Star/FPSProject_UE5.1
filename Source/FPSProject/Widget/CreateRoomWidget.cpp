@@ -22,10 +22,10 @@ void UCreateRoomWidget::OnclickedCreate()
 	{
 		FSendPacket_RoomCreate S_RoomCreate;
 
-		S_RoomCreate.Id = Inst->GetId();
+		S_RoomCreate.Id = UFPSProjectGameInstance::Getinstance()->GetId();
 		S_RoomCreate.Title = Edit_Title->Text.ToString();
 
-		Inst->SendData(S_RoomCreate);
+		UFPSProjectGameInstance::Getinstance()->SendData(S_RoomCreate);
 		/* Test */
 		//Inst->GetTest()->TestRoomCreate();
 		/********/
