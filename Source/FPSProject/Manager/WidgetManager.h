@@ -33,6 +33,9 @@ class FPSPROJECT_API UWidgetManager : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 	UWidgetManager();
+
+	virtual void Initialize(FSubsystemCollectionBase& Collection)  override;
+
 	
 public:
 	static UWidgetManager* WidgetManager;

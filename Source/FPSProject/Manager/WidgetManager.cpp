@@ -53,6 +53,11 @@ UWidgetManager::UWidgetManager()
 		TSubclassOf<ULoadingWidget> W_LoadingClass = LoadingWidget.Class;
 		W_Loading = CreateWidget<ULoadingWidget>(GetWorld(), W_LoadingClass);
 	}
+}
+
+void UWidgetManager::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
 
 	WidgetManager = this;
 }

@@ -92,9 +92,6 @@ public:
 
 public:
 
-	UFUNCTION(BlueprintCallable)
-	void EnterGame();
-
 	void SetId(FString _Id);
 	FString GetId();
 

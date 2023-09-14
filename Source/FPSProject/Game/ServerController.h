@@ -32,9 +32,6 @@ protected:
 	void TestPacket(FRecvPacket_Wrapper& packetWrapper); //FPacketHandlerFuncÀÇ ÇÔ¼ö
 
 	UFUNCTION()
-	void EnterGame(FRecvPacket_Wrapper& packetWrapper);
-
-	UFUNCTION()
 	void PlayerSpawn(FRecvPacket_Wrapper& packetWrapper);
 
 	UFUNCTION()
@@ -50,10 +47,13 @@ protected:
 	void RoomList(FRecvPacket_Wrapper& packetWrapper);
 
 	UFUNCTION()
-	void InRoomUser(FRecvPacket_Wrapper& packetWrapper);
+	void RoomEnter(FRecvPacket_Wrapper& packetWrapper);
 
 	UFUNCTION()
-	void GameStart(FRecvPacket_Wrapper& packetWrapper);
+	void RoomInUser(FRecvPacket_Wrapper& packetWrapper);
+
+	UFUNCTION()
+	void GameStartButton(FRecvPacket_Wrapper& packetWrapper);
 
 private:
 	UPROPERTY()

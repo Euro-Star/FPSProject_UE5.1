@@ -9,7 +9,6 @@
 UFPSProjectGameInstance* UFPSProjectGameInstance::Inst;
 UFPSProjectGameInstance::UFPSProjectGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	Inst = this;
 }
 UFPSProjectGameInstance* UFPSProjectGameInstance::Getinstance()
 {
@@ -19,6 +18,8 @@ UFPSProjectGameInstance* UFPSProjectGameInstance::Getinstance()
 void UFPSProjectGameInstance::Init()
 {
 	Super::Init();
+
+	Inst = this;
 
 	ConnectServer();
 
@@ -60,13 +61,6 @@ void UFPSProjectGameInstance::RecvPacket(FString packetName, TSharedPtr<FJsonObj
 ATestServerPacket* UFPSProjectGameInstance::GetTest()
 {
 	return TestServerPack;
-}
-
-void UFPSProjectGameInstance::EnterGame()
-{
-	FSendPacket_EnterGame S_EnterGame;
-
-	SendData(S_EnterGame);
 }
 
 void UFPSProjectGameInstance::SetId(FString _Id)

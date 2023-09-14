@@ -80,6 +80,9 @@ public:
 	UPROPERTY()
 	class UGamePlayWidget* GamePlayWidget;
 
+	UPROPERTY()
+	class AFPSProjectGameState* GameState;
+
 protected:
 	UPROPERTY()
 	bool bFps = true;
@@ -89,6 +92,9 @@ protected:
 
 	UPROPERTY()
 	bool IsReload = false;
+
+	UPROPERTY()
+	bool bRun = false;
 
 	UPROPERTY()
 	FTimerHandle ZoominTimer;
@@ -151,6 +157,10 @@ protected:
 	void ZoomOut();
 	UFUNCTION()
 	void Reload();
+	UFUNCTION()
+	void RunStart();
+	UFUNCTION()
+	void RunEnd();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -161,6 +171,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool GetIsReload();
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsRun();
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)

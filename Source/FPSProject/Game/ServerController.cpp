@@ -14,6 +14,7 @@
 #include <Widget/RoomWidget.h>
 #include <Widget/WaitingRoomWidget.h>
 #include "Manager/WidgetManager.h"
+#include "Kismet/KismetStringLibrary.h"
 
 AServerController::AServerController()
 {
@@ -53,28 +54,23 @@ void AServerController::TestPacket(FRecvPacket_Wrapper& packetWrapper)
 	}
 }
 
-void AServerController::EnterGame(FRecvPacket_Wrapper& packetWrapper)
-{
-	INIT_FUNCTION(EnterGame)
-
-	if (ptr)
-	{
-		GameState->SetPlayerId(ptr->PlayerId);
-		GameState->bTest = true;
-	}
-}
-
 void AServerController::PlayerSpawn(FRecvPacket_Wrapper& packetWrapper)
 {
 	INIT_FUNCTION(PlayerSpawn)
 
 	if (ptr)
 	{
+		if (GameState == nullptr)
+		{
+			GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
+		}
+
 		TArray<ASpawnPoint*> SpawnPoint = GameState->GetSpawnPoint();
+		GameState->SetPlayerIndex(ptr->PlayerIndex);
 
 		for (int32 i = 0; i < SpawnPoint.Num(); ++i)
 		{
-			if (i == GameState->GetPlayerId())
+			if (i == GameState->GetPlayerIndex())
 			{
 				GameState->GetPlayer()->SetActorLocation(SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation());
 			}
@@ -83,6 +79,8 @@ void AServerController::PlayerSpawn(FRecvPacket_Wrapper& packetWrapper)
 				GameState->AddOtherCharacter(GetWorld()->SpawnActor<AOtherCharacter>(GameState->GetOtherCharacterClass(), SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f)), i);
 			}
 		}
+
+		UWidgetManager::Get()->RemoveWidget(EWidget::Loading);
 	}
 }
 
@@ -92,8 +90,13 @@ void AServerController::PlayerMove(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
-		GameState->GetOtherCharacter(ptr->PlayerId)->SetActorLocation(ptr->CurrentLocation);
-		GameState->GetOtherCharacter(ptr->PlayerId)->SetKeyDown(ptr->InputKey, ptr->IsPress);
+		if (GameState == nullptr)
+		{
+			GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
+		}
+
+		GameState->GetOtherCharacter(ptr->PlayerIndex)->SetActorLocation(ptr->CurrentLocation);
+		GameState->GetOtherCharacter(ptr->PlayerIndex)->SetKeyDown(ptr->InputKey, ptr->IsPress);
 	}
 }
 
@@ -103,7 +106,7 @@ void AServerController::PlayerRotation(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
-		GameState->GetOtherCharacter(ptr->PlayerId)->SetActorRotation(FRotator(0.0f, 0.0f, ptr->RotationY));
+		GameState->GetOtherCharacter(ptr->PlayerIndex)->SetActorRotation(FRotator(0.0f, 0.0f, ptr->RotationY));
 	}
 }
 
@@ -118,8 +121,16 @@ void AServerController::RoomCreate(FRecvPacket_Wrapper& packetWrapper)
 			UFPSProjectGameInstance::Getinstance()->SetRoomNumber(ptr->RoomNumber);
 
 			UWidgetManager::Get()->GetWidget<URoomWidget>(EWidget::Room)->SetRoomStatus(ptr->bCreate);
+			UWidgetManager::Get()->GetWidget<URoomWidget>(EWidget::Room)->AddRoomUser(UFPSProjectGameInstance::Getinstance()->GetId());
 			UWidgetManager::Get()->AddWidget(EWidget::Room);
 			UWidgetManager::Get()->RemoveWidget(EWidget::WaitingRoom);
+
+			FSendPacket_RoomEnter S_RoomEnter;
+
+			S_RoomEnter.PlayerId = UFPSProjectGameInstance::Getinstance()->GetId();
+			S_RoomEnter.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
+
+			UFPSProjectGameInstance::Getinstance()->SendData(S_RoomEnter);
 		}
 	}
 }
@@ -137,19 +148,34 @@ void AServerController::RoomList(FRecvPacket_Wrapper& packetWrapper)
 	}
 }
 
-void AServerController::InRoomUser(FRecvPacket_Wrapper& packetWrapper)
+void AServerController::RoomEnter(FRecvPacket_Wrapper& packetWrapper)
 {
-	INIT_FUNCTION(InRoomUser)
+	INIT_FUNCTION(RoomEnter)
 
-	if (ptr)
+	if(ptr)
 	{
-		UWidgetManager::Get()->GetWidget<URoomWidget>(EWidget::Room)->AddRoomUser(ptr->Id);
+		UFPSProjectGameInstance::Getinstance()->SetRoomNumber(ptr->RoomNumber);
+
+		UWidgetManager::Get()->AddWidget(EWidget::Room);
+		UWidgetManager::Get()->RemoveWidget(EWidget::WaitingRoom);
+
+		UWidgetManager::Get()->GetWidget<URoomWidget>(EWidget::Room)->InitRoomUser(ptr->PlayerId);
 	}
 }
 
-void AServerController::GameStart(FRecvPacket_Wrapper& packetWrapper)
+void AServerController::RoomInUser(FRecvPacket_Wrapper& packetWrapper)
 {
-	INIT_FUNCTION(GameStart)
+	INIT_FUNCTION(RoomInUser)
+
+	if (ptr)
+	{
+		UWidgetManager::Get()->GetWidget<URoomWidget>(EWidget::Room)->AddRoomUser(ptr->PlayerId);
+	}
+}
+
+void AServerController::GameStartButton(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(GameStartButton)
 
 	if (ptr)
 	{

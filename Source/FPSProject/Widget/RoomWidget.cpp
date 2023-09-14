@@ -31,7 +31,7 @@ void URoomWidget::NativeConstruct()
 
 void URoomWidget::OnclickedGameStart()
 {
-	FSendPacket_GameStart S_GameStart;
+	FSendPacket_GameStartButton S_GameStart;
 
 	S_GameStart.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
 

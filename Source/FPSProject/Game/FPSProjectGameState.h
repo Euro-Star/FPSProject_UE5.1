@@ -30,7 +30,7 @@ private:
 	TArray<ASpawnPoint*> SpawnPoint;
 
 	UPROPERTY()
-	int32 PlayerId;
+	int32 PlayerIndex;
 
 	UPROPERTY()
 	TSubclassOf<AOtherCharacter> OtherCharacter;
@@ -52,8 +52,8 @@ public:
 	void SetSpawnPoint(TArray<ASpawnPoint*> _SpawnPoint);
 	TArray<ASpawnPoint*> GetSpawnPoint();
 
-	void SetPlayerId(int32 _PlayerId);
-	int32 GetPlayerId();
+	void SetPlayerIndex(int32 _PlayerIndex);
+	int32 GetPlayerIndex();
 
 	UClass* GetOtherCharacterClass();
 	TObjectPtr<AFPSProjectCharacter> GetPlayer();

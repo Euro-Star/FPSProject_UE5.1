@@ -20,7 +20,16 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* LoadingBar;
 
+	UPROPERTY()
+	float Percent = 0.0f;
+
+	UPROPERTY()
+	FTimerHandle LoadingTimer;
+
 public:
 	UFUNCTION()
-	void UpdateLoadingBar(float Percent);
+	void UpdateLoadingBar(float _Percent, bool bComplete = false);
+
+	UFUNCTION()
+	void FakeLoading();
 };

@@ -52,7 +52,7 @@ struct FRecvPacket_PlayerRotation
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int32 PlayerId;
+	int32 PlayerIndex;
 
 	UPROPERTY()
 	float RotationY;
@@ -66,7 +66,10 @@ struct FSendPacket_PlayerRotation
 	PACKET_CONSTRUCT(PlayerRotation)
 
 	UPROPERTY()
-	int32 PlayerId;
+	int32 RoomNumber;
+
+	UPROPERTY()
+	int32 PlayerIndex;
 
 	UPROPERTY()
 	float RotationY;
@@ -80,7 +83,10 @@ struct FSendPacket_PlayerMove
 	PACKET_CONSTRUCT(PlayerMove)
 
 	UPROPERTY()
-	int32 PlayerId;
+	int32 RoomNumber;
+
+	UPROPERTY()
+	int32 PlayerIndex;
 
 	// 0: Up, 1: Down, 2: Left, 3: Right
 	UPROPERTY() 
@@ -100,7 +106,7 @@ struct FRecvPacket_PlayerMove
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int32 PlayerId;
+	int32 PlayerIndex;
 
 	// 0: Up, 1: Down, 2: Left, 3: Right
 	UPROPERTY() 
@@ -114,16 +120,6 @@ struct FRecvPacket_PlayerMove
 	FVector CurrentLocation;
 };
 
-USTRUCT()
-struct FSendPacket_PlayerSpawn
-{
-	GENERATED_BODY()
-
-	PACKET_CONSTRUCT(PlayerSpawn)
-
-	UPROPERTY()
-	TArray<int32> SpawnIndex;
-};
 
 USTRUCT()
 struct FRecvPacket_PlayerSpawn
@@ -131,25 +127,15 @@ struct FRecvPacket_PlayerSpawn
 	GENERATED_BODY()
 
 	UPROPERTY()
+	int32 PlayerIndex;
+
+	UPROPERTY()
+	TArray<FString> PlayerIds;
+
+	UPROPERTY()
 	TArray<int32> SpawnIndex;
 };
 
-USTRUCT()
-struct FSendPacket_EnterGame
-{
-	GENERATED_BODY()
-
-	PACKET_CONSTRUCT(EnterGame)
-};
-
-USTRUCT()
-struct FRecvPacket_EnterGame
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int32 PlayerId;
-};
 
 USTRUCT()
 struct FSendPacket_Login
@@ -224,18 +210,18 @@ struct FRecvPacket_RoomList
 };
 
 USTRUCT()
-struct FSendPacket_GameStart
+struct FSendPacket_GameStartButton
 {
 	GENERATED_BODY()
 
-	PACKET_CONSTRUCT(GameStart)
+	PACKET_CONSTRUCT(GameStartButton)
 	
 	UPROPERTY()
 	int32 RoomNumber;
 };
 
 USTRUCT()
-struct FRecvPacket_GameStart
+struct FRecvPacket_GameStartButton
 {
 	GENERATED_BODY()
 
@@ -249,7 +235,7 @@ struct FSendPacket_RoomEnter
 	PACKET_CONSTRUCT(RoomEnter)
 
 	UPROPERTY()
-	FString Id;
+	FString PlayerId;
 
 	UPROPERTY()
 	int32 RoomNumber;
@@ -261,14 +247,31 @@ struct FRecvPacket_RoomEnter
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<FString> Id;
+	TArray<FString> PlayerId;
+
+	UPROPERTY()
+	int32 RoomNumber;
 };
 
 USTRUCT()
-struct FRecvPacket_InRoomUser
+struct FRecvPacket_RoomInUser
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
-	FString Id;
+	FString PlayerId;
+};
+
+USTRUCT()
+struct FSendPacket_LoadingComplete
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(LoadingComplete)
+
+	UPROPERTY()
+	FString PlayerId;
+
+	UPROPERTY()
+	int32	RoomNumber;
 };

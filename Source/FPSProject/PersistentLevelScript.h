@@ -23,13 +23,11 @@ private:
 	UPROPERTY()
 	FName PackageName;
 
+	UPROPERTY()
+	FLatentActionInfo Info;
+
 public:
 	UFUNCTION(BlueprintCallable)
-	void TestFuc();
-
-	UFUNCTION(BlueprintCallable)
-	void TestFuc2(FName name);
-
-
+	void CompleteLevelLoaded();
 	
 };

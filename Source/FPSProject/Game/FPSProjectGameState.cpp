@@ -51,14 +51,14 @@ TArray<ASpawnPoint*> AFPSProjectGameState::GetSpawnPoint()
 	return SpawnPoint;
 }
 
-void AFPSProjectGameState::SetPlayerId(int32 _PlayerId)
+void AFPSProjectGameState::SetPlayerIndex(int32 _PlayerIndex)
 {
-	PlayerId = _PlayerId;
+	PlayerIndex = _PlayerIndex;
 }
 
-int32 AFPSProjectGameState::GetPlayerId()
+int32 AFPSProjectGameState::GetPlayerIndex()
 {
-	return PlayerId;
+	return PlayerIndex;
 }
 
 UClass* AFPSProjectGameState::GetOtherCharacterClass()

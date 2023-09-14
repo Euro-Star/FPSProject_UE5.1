@@ -4,10 +4,13 @@
 #include "Widget/WaitingRoomWidgetEntry.h"
 #include "Server/Packets.h"
 #include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 void UWaitingRoomWidgetEntry::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	Btn_RoomEnter->OnClicked.AddUniqueDynamic(this, &UWaitingRoomWidgetEntry::OnclickedRoomEnter);
 }
 
 void UWaitingRoomWidgetEntry::SetRoomInfo(FRoomInfo RoomInfo)
@@ -23,7 +26,7 @@ void UWaitingRoomWidgetEntry::OnclickedRoomEnter()
 {
 	FSendPacket_RoomEnter S_RoomEnter;
 
-	S_RoomEnter.Id = UFPSProjectGameInstance::Getinstance()->GetId();
+	S_RoomEnter.PlayerId = UFPSProjectGameInstance::Getinstance()->GetId();
 	S_RoomEnter.RoomNumber = RoomNumber;
 
 	UFPSProjectGameInstance::Getinstance()->SendData(S_RoomEnter);
