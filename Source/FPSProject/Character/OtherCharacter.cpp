@@ -9,7 +9,7 @@
 AOtherCharacter::AOtherCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
 	Gun->SetupAttachment(RootComponent);
@@ -71,6 +71,7 @@ void AOtherCharacter::MoveForward(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "MoveFoward");
 	}
 }
 

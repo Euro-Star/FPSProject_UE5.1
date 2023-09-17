@@ -168,9 +168,10 @@ float AFPSProjectCharacter::SendPlayerRotation()
 {
 	FSendPacket_PlayerRotation S_PlayerRotation;
 
-	S_PlayerRotation.isTCP = false;
+	S_PlayerRotation.isTCP = true;
 	S_PlayerRotation.PlayerIndex = GameState->GetPlayerIndex();
 	S_PlayerRotation.RotationY = PlayerRotation_Y;
+	S_PlayerRotation.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
 
 	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerRotation);
 
