@@ -137,6 +137,7 @@ public:
 protected:
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;
+	int32 Testnum = 0;
 
 	float SendPlayerRotation();
 

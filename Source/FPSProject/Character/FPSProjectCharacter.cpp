@@ -25,6 +25,8 @@
 #include "Manager/WidgetManager.h"
 #include "Game/FPSProjectGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetStringLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -153,11 +155,13 @@ void AFPSProjectCharacter::Tick(float DeltaTime)
 
 	if (Timer >= Interval)
 	{
-		PlayerRotation_Y = FQuat::FindBetween(FVector::ForwardVector, ThirdPersonCameraComponent->GetForwardVector()).Z;
+		PlayerRotation_Y = GetActorRotation().Yaw;
 
 		if (!(FMath::RoundToZero(PlayerRotation_Y) == FMath::RoundToZero(PrevRotation_Y)))
 		{
 			PrevRotation_Y = SendPlayerRotation();
+			++Testnum;
+			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_IntToString(Testnum));
 		}
 
 		Timer = 0.0f;
