@@ -115,5 +115,45 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 	}
 }
 
+float AOtherCharacter::GetForward()
+{
+	if (bUp && bDown)
+	{
+		return 0.0f;
+	}
+	else if (bUp)
+	{
+		return 1.0f;
+	}
+	else if (bDown)
+	{
+		return -1.0f;
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+float AOtherCharacter::GetRight()
+{
+	if (bRight && bLeft)
+	{
+		return 0.0f;
+	}
+	else if (bRight)
+	{
+		return 1.0f;
+	}
+	else if (bLeft)
+	{
+		return -1.0f;
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
 #pragma optimize("",on)
 

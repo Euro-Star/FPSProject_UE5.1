@@ -40,4 +40,10 @@ public:
 	void MoveRight(float Value);
 
 	void SetKeyDown(int32 KeyValue, bool Pressed);
+
+	UFUNCTION(BlueprintCallable)
+	float GetForward();
+
+	UFUNCTION(BlueprintCallable)
+	float GetRight();
 };
