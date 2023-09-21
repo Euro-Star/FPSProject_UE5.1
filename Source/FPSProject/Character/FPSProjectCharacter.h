@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Enum/GameEnum.h"
 #include "FPSProjectCharacter.generated.h"
 
 class UInputComponent;
@@ -137,7 +138,10 @@ public:
 protected:
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;
-	int32 Testnum = 0;
+	virtual void Jump() override;
+	virtual void StopJumping() override;
+
+	int32 testnum = 0;
 
 	float SendPlayerRotation();
 
@@ -145,11 +149,17 @@ protected:
 	void SendPressPlayerMoveDown();
 	void SendPressPlayerMoveLeft();
 	void SendPressPlayerMoveRight();
+	void SendPressPlayerJump();
+	void SendPressPlayerRun();
 
 	void SendReleasePlayerMoveUp();
 	void SendReleasePlayerMoveDown();
 	void SendReleasePlayerMoveLeft();
 	void SendReleasePlayerMoveRight();
+	void SendReleasePlayerJump();
+	void SendReleasePlayerRun();
+
+	void SendPlayerMove(EInputKey Key, bool bPressd = true, bool bTcp = true);
 
 protected:
 	UFUNCTION()

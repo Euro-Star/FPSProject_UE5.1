@@ -160,8 +160,8 @@ void AFPSProjectCharacter::Tick(float DeltaTime)
 		if (!(FMath::RoundToZero(PlayerRotation_Y) == FMath::RoundToZero(PrevRotation_Y)))
 		{
 			PrevRotation_Y = SendPlayerRotation();
-			++Testnum;
-			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_IntToString(Testnum));
+			++testnum;
+			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_IntToString(testnum));
 		}
 
 		Timer = 0.0f;
@@ -182,121 +182,97 @@ float AFPSProjectCharacter::SendPlayerRotation()
 	return PlayerRotation_Y;
 }
 
+/* 키 입력 서버 코드 */
 void AFPSProjectCharacter::SendPressPlayerMoveUp()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
-
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Up;
-	S_PlayerMove.IsPress = true;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	SendPlayerMove(EInputKey::Up);
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveDown()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
-
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Down;
-	S_PlayerMove.IsPress = true;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	SendPlayerMove(EInputKey::Down);
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveLeft()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
-
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Left;
-	S_PlayerMove.IsPress = true;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	SendPlayerMove(EInputKey::Left);
 }
 
 void AFPSProjectCharacter::SendPressPlayerMoveRight()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
+	SendPlayerMove(EInputKey::Right);
+}
 
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Right;
-	S_PlayerMove.IsPress = true;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
+void AFPSProjectCharacter::SendPressPlayerJump()
+{
+	SendPlayerMove(EInputKey::Jump);
+}
 
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+void AFPSProjectCharacter::SendPressPlayerRun()
+{
+	SendPlayerMove(EInputKey::Run);
+}
+
+void AFPSProjectCharacter::Jump()
+{
+	Super::Jump();
+
+	SendPressPlayerJump();
+}
+
+void AFPSProjectCharacter::StopJumping()
+{
+	Super::StopJumping();
+
+	SendReleasePlayerJump();
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveUp()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
-
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Up;
-	S_PlayerMove.IsPress = false;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	SendPlayerMove(EInputKey::Up, false);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveDown()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
-
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Down;
-	S_PlayerMove.IsPress = false;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	SendPlayerMove(EInputKey::Down, false);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveLeft()
 {
-	FSendPacket_PlayerMove S_PlayerMove;
-
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Left;
-	S_PlayerMove.IsPress = false;
-	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
-	S_PlayerMove.CurrentLocation = GetActorLocation();
-	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	SendPlayerMove(EInputKey::Left, false);
 }
 
 void AFPSProjectCharacter::SendReleasePlayerMoveRight()
 {
+	SendPlayerMove(EInputKey::Right, false);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerJump()
+{
+	SendPlayerMove(EInputKey::Jump, false);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerRun()
+{
+	SendPlayerMove(EInputKey::Run, false);
+}
+
+void AFPSProjectCharacter::SendPlayerMove(EInputKey Key, bool bPressd, bool bTcp)
+{
 	FSendPacket_PlayerMove S_PlayerMove;
 
-	S_PlayerMove.isTCP = true;
-	S_PlayerMove.InputKey = (int32)EInputKey::Right;
-	S_PlayerMove.IsPress = false;
+	S_PlayerMove.isTCP = bTcp;
+	S_PlayerMove.InputKey = (int32)Key;
+	S_PlayerMove.IsPress = bPressd;
 	S_PlayerMove.PlayerIndex = GameState->GetPlayerIndex();
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
 
 	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
 }
+////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////
 // Input
-
 void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -351,22 +327,10 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 		PlayerInputComponent->BindAction("Right", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveRight);
 		PlayerInputComponent->BindAction("Right", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveRight);
 	}
-	//PlayerInputComponent->BindAction("Up", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveUp);
-	//PlayerInputComponent->BindAction("Up", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveUp);
-	//
-	//PlayerInputComponent->BindAction("Down", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveDown);
-	//PlayerInputComponent->BindAction("Down", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveDown);
-	//
-	//PlayerInputComponent->BindAction("Left", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveLeft);
-	//PlayerInputComponent->BindAction("Left", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveLeft);
-	//
-	//PlayerInputComponent->BindAction("Right", IE_Pressed, this, &AFPSProjectCharacter::SendPressPlayerMoveRight);
-	//PlayerInputComponent->BindAction("Right", IE_Released, this, &AFPSProjectCharacter::SendReleasePlayerMoveRight);
 }
 
 void AFPSProjectCharacter::OnFire()
 {
-
 	FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
 	FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 2000.0f;
 
@@ -531,6 +495,8 @@ void AFPSProjectCharacter::RunEnd()
 {
 	bRun = false;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+
+	SendReleasePlayerRun();
 }
 
 void AFPSProjectCharacter::RunStart()
@@ -538,6 +504,8 @@ void AFPSProjectCharacter::RunStart()
 	bRun = true;
 	ZoomOut();
 	GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+
+	SendPressPlayerRun();
 }
 
 bool AFPSProjectCharacter::GetIsZoomin()

@@ -2,6 +2,7 @@
 
 
 #include "OtherCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #pragma optimize("", off)
 
@@ -27,6 +28,11 @@ void AOtherCharacter::BeginPlay()
 void AOtherCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bPressedJump)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, "jump true");
+	}
 
 	Move();
 }
@@ -84,6 +90,19 @@ void AOtherCharacter::MoveRight(float Value)
 	}
 }
 
+void AOtherCharacter::RunStart()
+{
+	bRun = true;
+	//ZoomOut();
+	GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+}
+
+void AOtherCharacter::RunEnd()
+{
+	bRun = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+}
+
 void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 {
 	switch (KeyValue)
@@ -108,6 +127,33 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 			bRight = Pressed;
 			break;
 		}
+		case 4:
+		{
+			if (Pressed)
+			{
+				Jump();
+				bJump = true;
+			}
+			else
+			{
+				StopJumping();
+				bJump = false;
+			}
+			break;
+		}
+		case 5:
+		{	
+			if (Pressed)
+			{
+				RunStart();
+			}
+			else
+			{
+				RunEnd();
+			}
+			break;
+		}
+
 		default:
 		{
 			break;
@@ -153,6 +199,16 @@ float AOtherCharacter::GetRight()
 	{
 		return 0.0f;
 	}
+}
+
+bool AOtherCharacter::IsRun()
+{
+	return bRun;
+}
+
+bool AOtherCharacter::IsJump()
+{
+	return bJump;
 }
 
 #pragma optimize("",on)

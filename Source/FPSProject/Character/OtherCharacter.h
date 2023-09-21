@@ -27,6 +27,8 @@ protected:
 	bool bDown = false;
 	bool bLeft = false;
 	bool bRight = false;
+	bool bRun = false;
+	bool bJump = false;
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,6 +40,8 @@ public:
 	void Attacked();
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void RunStart();
+	void RunEnd();
 
 	void SetKeyDown(int32 KeyValue, bool Pressed);
 
@@ -46,4 +50,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetRight();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsRun();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsJump();
 };

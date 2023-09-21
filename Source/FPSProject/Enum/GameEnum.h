@@ -26,7 +26,9 @@ enum class EInputKey : uint8
 	Up,
 	Down,
 	Left,
-	Right
+	Right,
+	Jump,
+	Run
 };
 
 UENUM(BlueprintType)
