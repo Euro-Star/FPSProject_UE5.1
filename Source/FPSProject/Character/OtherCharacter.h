@@ -33,6 +33,7 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void Landed(const FHitResult& Hit) override;
 
 	void Move();
 
@@ -56,4 +57,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsJump();
+
 };

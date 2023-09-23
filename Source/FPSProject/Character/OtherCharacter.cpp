@@ -37,6 +37,13 @@ void AOtherCharacter::Tick(float DeltaTime)
 	Move();
 }
 
+void AOtherCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	bJump = false;
+}
+
 void AOtherCharacter::Move()
 {
 	if (bUp)
