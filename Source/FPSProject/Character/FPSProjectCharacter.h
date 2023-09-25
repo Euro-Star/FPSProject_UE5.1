@@ -151,6 +151,7 @@ protected:
 	void SendPressPlayerMoveRight();
 	void SendPressPlayerJump();
 	void SendPressPlayerRun();
+	void SendPressPlayerZoomIn();
 
 	void SendReleasePlayerMoveUp();
 	void SendReleasePlayerMoveDown();
@@ -158,6 +159,7 @@ protected:
 	void SendReleasePlayerMoveRight();
 	void SendReleasePlayerJump();
 	void SendReleasePlayerRun();
+	void SendReleasePlayerZoomOut();
 
 	void SendPlayerMove(EInputKey Key, bool bPressd = true, bool bTcp = true);
 

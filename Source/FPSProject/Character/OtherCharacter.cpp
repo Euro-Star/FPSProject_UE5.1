@@ -160,6 +160,17 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 			}
 			break;
 		}
+		case 6:
+		{
+			if (Pressed)
+			{
+				bZoomIn = true;
+			}
+			else
+			{
+				bZoomIn = false;
+			}
+		}
 
 		default:
 		{
@@ -216,6 +227,11 @@ bool AOtherCharacter::IsRun()
 bool AOtherCharacter::IsJump()
 {
 	return bJump;
+}
+
+bool AOtherCharacter::IsZoomIn()
+{
+	return bZoomIn;
 }
 
 #pragma optimize("",on)

@@ -213,6 +213,11 @@ void AFPSProjectCharacter::SendPressPlayerRun()
 	SendPlayerMove(EInputKey::Run);
 }
 
+void AFPSProjectCharacter::SendPressPlayerZoomIn()
+{
+	SendPlayerMove(EInputKey::ZoomIn);
+}
+
 void AFPSProjectCharacter::Jump()
 {
 	Super::Jump();
@@ -255,6 +260,11 @@ void AFPSProjectCharacter::SendReleasePlayerJump()
 void AFPSProjectCharacter::SendReleasePlayerRun()
 {
 	SendPlayerMove(EInputKey::Run, false);
+}
+
+void AFPSProjectCharacter::SendReleasePlayerZoomOut()
+{
+	SendPlayerMove(EInputKey::ZoomIn, false);
 }
 
 void AFPSProjectCharacter::SendPlayerMove(EInputKey Key, bool bPressd, bool bTcp)
@@ -424,6 +434,7 @@ void AFPSProjectCharacter::ZoomIn()
 	{
 		IsZoomIn = true;
 		bUseControllerRotationYaw = true;
+		SendPressPlayerZoomIn();
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
 			{
 				ZoominFrame += 0.1f;
@@ -443,6 +454,7 @@ void AFPSProjectCharacter::ZoomOut()
 	{
 		IsZoomIn = false;
 		bUseControllerRotationYaw = false;
+		SendReleasePlayerZoomOut();
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
 			{
 				ZoominFrame -= 0.1f;

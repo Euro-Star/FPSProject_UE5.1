@@ -29,6 +29,7 @@ protected:
 	bool bRight = false;
 	bool bRun = false;
 	bool bJump = false;
+	bool bZoomIn = false;
 
 protected:
 	virtual void BeginPlay() override;
@@ -57,5 +58,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsJump();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsZoomIn();
 
 };
