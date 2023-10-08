@@ -25,8 +25,6 @@ AServerController::AServerController()
 void AServerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
 }
 
 void AServerController::Tick(float DeltaTime)
@@ -60,23 +58,19 @@ void AServerController::PlayerSpawn(FRecvPacket_Wrapper& packetWrapper)
 
 	if (ptr)
 	{
-		if (GameState == nullptr)
-		{
-			GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
-		}
-
-		TArray<ASpawnPoint*> SpawnPoint = GameState->GetSpawnPoint();
-		GameState->SetPlayerIndex(ptr->PlayerIndex);
+		TArray<ASpawnPoint*> SpawnPoint = AFPSProjectGameState::Get()->GetSpawnPoint();
+		AFPSProjectGameState::Get()->SetPlayerIndex(ptr->PlayerIndex);
 
 		for (int32 i = 0; i < SpawnPoint.Num(); ++i)
 		{
-			if (i == GameState->GetPlayerIndex())
+			if (i == AFPSProjectGameState::Get()->GetPlayerIndex())
 			{
-				GameState->GetPlayer()->SetActorLocation(SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation());
+				AFPSProjectGameState::Get()->GetPlayer()->SetActorLocation(SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation());
 			}
 			else
 			{
-				GameState->AddOtherCharacter(GetWorld()->SpawnActor<AOtherCharacter>(GameState->GetOtherCharacterClass(), SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f)), i);
+				AFPSProjectGameState::Get()->AddOtherCharacter(GetWorld()->SpawnActor<AOtherCharacter>(AFPSProjectGameState::Get()->GetOtherCharacterClass(), SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f)), i);
+				AFPSProjectGameState::Get()->GetOtherCharacter(i)->SetPlayerIndex(i);
 			}
 		}
 
@@ -90,13 +84,8 @@ void AServerController::PlayerMove(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
-		if (GameState == nullptr)
-		{
-			GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
-		}
-
-		GameState->GetOtherCharacter(ptr->PlayerIndex)->SetActorLocation(ptr->CurrentLocation);
-		GameState->GetOtherCharacter(ptr->PlayerIndex)->SetKeyDown(ptr->InputKey, ptr->IsPress);
+		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetActorLocation(ptr->CurrentLocation);
+		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetKeyDown(ptr->InputKey, ptr->IsPress);
 	}
 }
 
@@ -106,7 +95,7 @@ void AServerController::PlayerRotation(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
-		GameState->GetOtherCharacter(ptr->PlayerIndex)->SetActorRotation(FRotator(0.0f, ptr->RotationY, 0.0f));
+		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetActorRotation(FRotator(0.0f, ptr->RotationY, 0.0f));
 	}
 }
 
@@ -181,4 +170,19 @@ void AServerController::GameStartButton(FRecvPacket_Wrapper& packetWrapper)
 	{
 		UGameplayStatics::OpenLevel(this, "PersistentMap", true);
 	}
+}
+
+void AServerController::Die(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(Die)
+
+	if (ptr)
+	{
+		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->Die(true);
+	}
+}
+
+void AServerController::ChangeHealth(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(Die)
 }

@@ -399,7 +399,7 @@ void AFPSProjectCharacter::FireBullet()
 		const FVector SpawnLocation = ThirdPersonCameraComponent->GetComponentLocation();
 
 		ABulletBase* Bullet = nullptr;
-		Bullet = mBulletManager->UseBullet(Bullet);
+		Bullet = mBulletManager->UseBullet(Bullet, EBulletType::Rifle);
 		if (Bullet)
 		{
 			Bullet->UseBullet(SpawnLocation, SpawnRotation, ThirdPersonCameraComponent->GetForwardVector());
@@ -538,6 +538,13 @@ bool AFPSProjectCharacter::GetIsReload()
 bool AFPSProjectCharacter::GetIsRun()
 {
 	return bRun;
+}
+
+void AFPSProjectCharacter::Die()
+{
+	// 죽는 애니메이션
+	// 조작 막기
+	// 메인 메뉴로 가는 위젯띄우기
 }
 
 void AFPSProjectCharacter::OnResetVR()

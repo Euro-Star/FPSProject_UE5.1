@@ -3,6 +3,7 @@
 
 #include "OtherCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Game/FPSProjectGameState.h"
 
 #pragma optimize("", off)
 
@@ -44,6 +45,13 @@ void AOtherCharacter::Landed(const FHitResult& Hit)
 	bJump = false;
 }
 
+void AOtherCharacter::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	GetWorld()->GetTimerManager().ClearTimer(DieTimer);
+}
+
 void AOtherCharacter::Move()
 {
 	if (bUp)
@@ -76,6 +84,18 @@ void AOtherCharacter::Attacked()
 	{
 		HitAnimInstance->Montage_Play(HitAnim, 1.f);
 	}
+}
+
+void AOtherCharacter::Die(bool _bDie)
+{
+	bDie = _bDie;
+	// 죽었을때 처리해야할 것 : 시체 사라지게 하기
+	GetWorld()->GetTimerManager().SetTimer(DieTimer, FTimerDelegate::CreateLambda([&]() {
+		{
+			AFPSProjectGameState::Get()->RemoveOtherCharacter(PlayerIndex);
+			GetWorld()->GetTimerManager().ClearTimer(DieTimer);
+		}
+		}), 5.0f, false);
 }
 
 void AOtherCharacter::MoveForward(float Value)
@@ -179,6 +199,21 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 	}
 }
 
+int32 AOtherCharacter::GetPlayerIndex()
+{
+	return PlayerIndex;
+}
+
+void AOtherCharacter::ChangeHp(int32 _Hp)
+{
+	Hp = _Hp;
+}
+
+void AOtherCharacter::SetPlayerIndex(int32 _PlayerIndex)
+{
+	PlayerIndex = _PlayerIndex;
+}
+
 float AOtherCharacter::GetForward()
 {
 	if (bUp && bDown)
@@ -232,6 +267,11 @@ bool AOtherCharacter::IsJump()
 bool AOtherCharacter::IsZoomIn()
 {
 	return bZoomIn;
+}
+
+bool AOtherCharacter::IsDie()
+{
+	return bDie;
 }
 
 #pragma optimize("",on)

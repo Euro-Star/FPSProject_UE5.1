@@ -31,9 +31,10 @@ void ABulletManager::BeginPlay()
 	}
 }
 
-ABulletBase* ABulletManager::UseBullet(ABulletBase* Bullet)
+ABulletBase* ABulletManager::UseBullet(ABulletBase* Bullet, EBulletType _BulletType)
 {
 	BulletPulling.Dequeue(Bullet);
+	Bullet->SetBulletType(_BulletType);
 	return Bullet;
 }
 

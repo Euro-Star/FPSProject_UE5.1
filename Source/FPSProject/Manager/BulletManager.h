@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Enum/GameEnum.h"
 #include "BulletManager.generated.h"
 
 UCLASS()
@@ -26,6 +27,6 @@ public:
 	TQueue<ABulletBase*> BulletPulling;
 
 public:
-	ABulletBase* UseBullet(ABulletBase* Bullet);
+	ABulletBase* UseBullet(ABulletBase* Bullet, EBulletType _BulletType);
 	void UsedBullet(ABulletBase* Bullet);	
 };

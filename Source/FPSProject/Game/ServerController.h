@@ -54,13 +54,14 @@ protected:
 
 	UFUNCTION()
 	void GameStartButton(FRecvPacket_Wrapper& packetWrapper);
+	
+	UFUNCTION()
+	void Die(FRecvPacket_Wrapper& packetWrapper);
+
+	UFUNCTION()
+	void ChangeHealth(FRecvPacket_Wrapper& packetWrapper);
 
 private:
 	UPROPERTY()
-	TMap<FString, FPacketHandlerFunc> HandleFunc;
-
-	UPROPERTY()
-	TObjectPtr<AFPSProjectGameState> GameState;
-
-	
+	TMap<FString, FPacketHandlerFunc> HandleFunc;	
 };

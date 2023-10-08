@@ -21,6 +21,12 @@ class FPSPROJECT_API AFPSProjectGameState : public AGameStateBase
 
 	AFPSProjectGameState();
 	virtual void BeginPlay() override;
+	virtual void PreInitializeComponents() override;
+
+public:
+	static AFPSProjectGameState* Get();
+	static AFPSProjectGameState* State;
+
 private:
 
 	UPROPERTY()
@@ -59,6 +65,7 @@ public:
 	TObjectPtr<AFPSProjectCharacter> GetPlayer();
 
 	void AddOtherCharacter(AOtherCharacter* _OtherCharacter, int32 Index);
+	void RemoveOtherCharacter(int32 Index);
 	inline TObjectPtr<AOtherCharacter> GetOtherCharacter(int32 Index);
 
 	UPROPERTY()

@@ -275,3 +275,42 @@ struct FSendPacket_LoadingComplete
 	UPROPERTY()
 	int32	RoomNumber;
 };
+
+USTRUCT()
+struct FSendPacket_ChangeHealth
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(ChangeHealth)
+
+	UPROPERTY()
+	int32 PlayerIndex;
+
+	UPROPERTY()
+	int32 RoomNumber;
+
+	// 체력회복 및 데이지 값
+	UPROPERTY()
+	int32 Value;
+};
+
+USTRUCT()
+struct FRecvPacket_ChangeHealth
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 PlayerIndex;
+
+	UPROPERTY()
+	int32 CurrentHealth;
+};
+
+USTRUCT()
+struct FRecvPacket_Die
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 PlayerIndex;
+};

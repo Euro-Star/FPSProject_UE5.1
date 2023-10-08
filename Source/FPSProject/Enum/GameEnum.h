@@ -40,3 +40,11 @@ enum class EMatchingWidget : uint8
 	WaitingRoom,
 	Room,
 };
+
+UENUM(BlueprintType)
+enum class EBulletType : uint8
+{
+	Pistol,
+	Rifle,
+	Sniper
+};

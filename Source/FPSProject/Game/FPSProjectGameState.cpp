@@ -7,6 +7,7 @@
 #include "Character/OtherCharacter.h"
 #include "Character/FPSProjectCharacter.h"
 
+AFPSProjectGameState* AFPSProjectGameState::State;
 AFPSProjectGameState::AFPSProjectGameState() : Super()
 {
 	static ConstructorHelpers::FClassFinder<APawn> OtherCharacterClassFinder(TEXT("/Game/Blueprint/Character/BP_OtherCharacter"));
@@ -21,6 +22,18 @@ void AFPSProjectGameState::BeginPlay()
 	Player = Cast<AFPSProjectCharacter>(UFPSGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	OtherCharaterArray.Init(nullptr, 7);
+}
+
+void AFPSProjectGameState::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+
+	State = this;
+}
+
+AFPSProjectGameState* AFPSProjectGameState::Get()
+{
+	return State;
 }
 
 int32 AFPSProjectGameState::GetEnemyTarget(int32 CurrentColor)
@@ -74,6 +87,12 @@ TObjectPtr<AFPSProjectCharacter> AFPSProjectGameState::GetPlayer()
 void AFPSProjectGameState::AddOtherCharacter(AOtherCharacter* _OtherCharacter, int32 Index)
 {
 	OtherCharaterArray[Index] = _OtherCharacter;
+}
+
+void AFPSProjectGameState::RemoveOtherCharacter(int32 Index)
+{
+	OtherCharaterArray[Index]->Destroy();
+	OtherCharaterArray[Index] = nullptr;
 }
 
 inline TObjectPtr<AOtherCharacter> AFPSProjectGameState::GetOtherCharacter(int32 Index)

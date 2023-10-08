@@ -5,6 +5,8 @@
 #include "Manager/BulletManager.h"
 #include "Character/FPSProjectCharacter.h"
 #include "Character/OtherCharacter.h"
+#include "Game/FPSProjectGameInstance.h"
+#include "Server/Packets.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -48,6 +50,14 @@ void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if (Cast<AOtherCharacter>(OtherActor) != nullptr)
 	{
 		Cast<AOtherCharacter>(OtherActor)->Attacked();
+
+		FSendPacket_ChangeHealth S_ChangeHealth;
+
+		S_ChangeHealth.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
+		S_ChangeHealth.Value = -10;
+		S_ChangeHealth.PlayerIndex = Cast<AOtherCharacter>(OtherActor)->GetPlayerIndex();
+
+		UFPSProjectGameInstance::Getinstance()->SendData(S_ChangeHealth);
 	}
 
 	Cast<AFPSProjectCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->mBulletManager->UsedBullet(this);
@@ -68,9 +78,9 @@ void ABulletBase::WaitBullet()
 	SetActorLocation(InitSpawnPoint);
 }
 
-void ABulletBase::SetBulletInfo(int32 Damage)
+void ABulletBase::SetBulletType(EBulletType _BulletType)
 {
-	mDamage = Damage;
+	BulletType = _BulletType;
 }
 
 FVector ABulletBase::GetInitSpawnPoint()

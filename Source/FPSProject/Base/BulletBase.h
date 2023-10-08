@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Enum/GameEnum.h"
 #include "BulletBase.generated.h"
 
 UCLASS()
@@ -26,7 +27,7 @@ protected:
 	FVector InitSpawnPoint = FVector(9999.0f, 9999.0f, 9999.0f);
 
 	UPROPERTY()
-	float mDamage = 0;
+	EBulletType BulletType;
 
 	UPROPERTY()
 	FVector TargetVector;
@@ -49,7 +50,7 @@ public:
 	UFUNCTION()
 	void WaitBullet();
 	UFUNCTION()
-	void SetBulletInfo(int32 Damage);
+	void SetBulletType(EBulletType _BulletType);
 	UFUNCTION()
 	FVector GetInitSpawnPoint();
 
