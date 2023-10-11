@@ -8,6 +8,7 @@
 #include "Widget/RoomWidget.h"
 #include "Widget/GamePlayWidget.h"
 #include "Widget/LoadingWidget.h"
+#include "Widget/DyingWidget.h"
 
 UWidgetManager* UWidgetManager::WidgetManager;
 UWidgetManager::UWidgetManager()
@@ -53,6 +54,13 @@ UWidgetManager::UWidgetManager()
 		TSubclassOf<ULoadingWidget> W_LoadingClass = LoadingWidget.Class;
 		W_Loading = CreateWidget<ULoadingWidget>(GetWorld(), W_LoadingClass);
 	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> DyingWidget(TEXT("/Game/Blueprint/Widget/W_Dying"));
+	if (DyingWidget.Class != NULL)
+	{
+		TSubclassOf<UDyingWidget> W_DyingClass = DyingWidget.Class;
+		W_Dying = CreateWidget<UDyingWidget>(GetWorld(), W_DyingClass);
+	}
 }
 
 void UWidgetManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -77,6 +85,7 @@ void UWidgetManager::AddWidget(EWidget WidgetEnum)
 	case EWidget::Room:			{	W_Room->AddToViewport(); break; }
 	case EWidget::GamePlay:		{	W_GamePlay->AddToViewport(); break; }
 	case EWidget::Loading:		{	W_Loading->AddToViewport(); break; }
+	case EWidget::Dying:		{	W_Dying->AddToViewport(); break; }
 
 	default: 
 		break;
@@ -93,6 +102,7 @@ void UWidgetManager::RemoveWidget(EWidget WidgetEnum)
 	case EWidget::Room:			{	W_Room->RemoveFromViewport(); break; }
 	case EWidget::GamePlay:		{	W_GamePlay->RemoveFromViewport(); break; }
 	case EWidget::Loading:		{	W_Loading->RemoveFromViewport(); break; }
+	case EWidget::Dying:		{	W_Dying->RemoveFromViewport(); break; }
 
 	default:
 		break;

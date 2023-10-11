@@ -49,7 +49,10 @@ void AOtherCharacter::BeginDestroy()
 {
 	Super::BeginDestroy();
 
-	GetWorld()->GetTimerManager().ClearTimer(DieTimer);
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(DieTimer);
+	}
 }
 
 void AOtherCharacter::Move()
@@ -89,7 +92,7 @@ void AOtherCharacter::Attacked()
 void AOtherCharacter::Die(bool _bDie)
 {
 	bDie = _bDie;
-	// 죽었을때 처리해야할 것 : 시체 사라지게 하기
+	
 	GetWorld()->GetTimerManager().SetTimer(DieTimer, FTimerDelegate::CreateLambda([&]() {
 		{
 			AFPSProjectGameState::Get()->RemoveOtherCharacter(PlayerIndex);

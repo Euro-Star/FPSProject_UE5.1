@@ -15,6 +15,7 @@ class UCreateRoomWidget;
 class URoomWidget;
 class UGamePlayWidget;
 class ULoadingWidget;
+class UDyingWidget;
 
 UENUM(BlueprintType)
 enum class EWidget : uint8
@@ -25,6 +26,7 @@ enum class EWidget : uint8
 	Room,
 	GamePlay,
 	Loading,
+	Dying
 };
 
 UCLASS()
@@ -55,6 +57,7 @@ public:
 		case EWidget::Room:			{	return (T*)W_Room; }
 		case EWidget::GamePlay:		{	return (T*)W_GamePlay; }
 		case EWidget::Loading:		{	return (T*)W_Loading; }
+		case EWidget::Dying:		{	return (T*)W_Dying; }
 
 		default:
 			return nullptr;
@@ -74,4 +77,6 @@ public:
 	UGamePlayWidget*		W_GamePlay;
 	UPROPERTY()
 	ULoadingWidget*			W_Loading;
+	UPROPERTY()
+	UDyingWidget*			W_Dying;
 };

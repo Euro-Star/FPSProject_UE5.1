@@ -178,7 +178,14 @@ void AServerController::Die(FRecvPacket_Wrapper& packetWrapper)
 
 	if (ptr)
 	{
-		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->Die(true);
+		if (ptr->PlayerIndex == AFPSProjectGameState::Get()->GetPlayerIndex())
+		{
+			AFPSProjectGameState::Get()->GetPlayer()->Die();
+		}
+		else
+		{
+			AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->Die(true);
+		}
 	}
 }
 

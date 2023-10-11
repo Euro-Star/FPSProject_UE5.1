@@ -82,3 +82,8 @@ int32 UFPSProjectGameInstance::GetRoomNumber()
 {
 	return CurrentRoomNumber;
 }
+
+void UFPSProjectGameInstance::InitGameInfo()
+{
+	CurrentRoomNumber = -1;
+}

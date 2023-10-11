@@ -54,14 +54,14 @@ public:
 
 	/* Server Code End */
 
-	UPROPERTY()
-	class AFPSProjectCharacter* Player;
+	//UPROPERTY()
+	//class AFPSProjectCharacter* Player;
 
 	UPROPERTY()
 	FString Id;
 
 	UPROPERTY()
-	int32 CurrentRoomNumber;
+	int32 CurrentRoomNumber = -1;
 
 	// 테스트 서버
 	UPROPERTY()
@@ -97,4 +97,7 @@ public:
 
 	void SetRoomNumber(int32 RoomNumber);
 	int32 GetRoomNumber();
+
+	// 게임이 끝난 뒤 로비로 가면서 초기화 시켜야할것
+	void InitGameInfo();
 };

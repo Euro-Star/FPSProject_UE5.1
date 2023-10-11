@@ -44,6 +44,7 @@ protected:
 
 	void Move();
 
+
 public:	
 	void Attacked();
 	void Die(bool _bDie);

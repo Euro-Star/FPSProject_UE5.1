@@ -27,6 +27,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/PlayerController.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -305,9 +306,9 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 
 	// Enable touchscreen input
-	EnableTouchscreenMovement(PlayerInputComponent);
+	//EnableTouchscreenMovement(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AFPSProjectCharacter::OnResetVR);
+	//PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AFPSProjectCharacter::OnResetVR);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSProjectCharacter::MoveForward);
@@ -317,7 +318,7 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AFPSProjectCharacter::TurnAtRate);
+	//PlayerInputComponent->BindAxis("TurnRate", this, &AFPSProjectCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPSProjectCharacter::LookUpAtRate);
 
@@ -350,7 +351,7 @@ void AFPSProjectCharacter::OnFire()
 	//GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
 	//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
 
-	if (IsReload)
+	if (bReload)
 	{
 		return;
 	}
@@ -365,7 +366,7 @@ void AFPSProjectCharacter::OnFire()
 
 	GetWorld()->GetTimerManager().SetTimer(OnFireTimer, FTimerDelegate::CreateLambda([&]() {
 		{
-			if (IsReload)
+			if (bReload)
 			{
 				GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
 				return;
@@ -430,9 +431,9 @@ void AFPSProjectCharacter::FireBullet()
 
 void AFPSProjectCharacter::ZoomIn()
 {
-	if (!IsZoomIn)
+	if (!bZoomIn)
 	{
-		IsZoomIn = true;
+		bZoomIn = true;
 		bUseControllerRotationYaw = true;
 		SendPressPlayerZoomIn();
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
@@ -450,9 +451,9 @@ void AFPSProjectCharacter::ZoomIn()
 
 void AFPSProjectCharacter::ZoomOut()
 {
-	if (IsZoomIn)
+	if (bZoomIn)
 	{
-		IsZoomIn = false;
+		bZoomIn = false;
 		bUseControllerRotationYaw = false;
 		SendReleasePlayerZoomOut();
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
@@ -470,12 +471,12 @@ void AFPSProjectCharacter::ZoomOut()
 
 void AFPSProjectCharacter::Reload()
 {
-	if (IsReload)
+	if (bReload)
 	{
 		return;
 	}
 
-	if (IsZoomIn)
+	if (bZoomIn)
 	{
 		ZoomOut();
 	}
@@ -489,13 +490,13 @@ void AFPSProjectCharacter::Reload()
 		{
 			AnimInstance->Montage_Play(ReloadAnimation, 1.f);
 			MagazineAnimInstance->Montage_Play(MagazineAnimation, 1.f);
-			IsReload = true;
+			bReload = true;
 
 			GetWorld()->GetTimerManager().SetTimer(ReloadinTimer, FTimerDelegate::CreateLambda([&]() {
 				{
 					GetWorld()->GetTimerManager().ClearTimer(ReloadinTimer);
 					CurrentAmmo = 30;
-					IsReload = false;
+					bReload = false;
 					GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
 				}
 				}), 3.23f, false);
@@ -520,100 +521,12 @@ void AFPSProjectCharacter::RunStart()
 	SendPressPlayerRun();
 }
 
-bool AFPSProjectCharacter::GetIsZoomin()
-{
-	return IsZoomIn;
-}
-
-int32 AFPSProjectCharacter::GetCurrentAmmo()
-{
-	return CurrentAmmo;
-}
-
-bool AFPSProjectCharacter::GetIsReload()
-{
-	return IsReload;
-}
-
-bool AFPSProjectCharacter::GetIsRun()
-{
-	return bRun;
-}
-
 void AFPSProjectCharacter::Die()
 {
-	// 죽는 애니메이션
-	// 조작 막기
-	// 메인 메뉴로 가는 위젯띄우기
+	bDie = true;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
+	UWidgetManager::Get()->AddWidget(EWidget::Dying);
 }
-
-void AFPSProjectCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void AFPSProjectCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == true)
-	{
-		return;
-	}
-	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void AFPSProjectCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	TouchItem.bIsPressed = false;
-}
-
-//Commenting this section out to be consistent with FPS BP template.
-//This allows the user to turn without using the right virtual joystick
-
-//void AFPSProjectCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-//	{
-//		if (TouchItem.bIsPressed)
-//		{
-//			if (GetWorld() != nullptr)
-//			{
-//				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-//				if (ViewportClient != nullptr)
-//				{
-//					FVector MoveDelta = Location - TouchItem.Location;
-//					FVector2D ScreenSize;
-//					ViewportClient->GetViewportSize(ScreenSize);
-//					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-//					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.X * BaseTurnRate;
-//						AddControllerYawInput(Value);
-//					}
-//					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.Y * BaseTurnRate;
-//						AddControllerPitchInput(Value);
-//					}
-//					TouchItem.Location = Location;
-//				}
-//				TouchItem.Location = Location;
-//			}
-//		}
-//	}
-//}
 
 void AFPSProjectCharacter::MoveForward(float Value)
 {
@@ -633,31 +546,10 @@ void AFPSProjectCharacter::MoveRight(float Value)
 	}
 }
 
-void AFPSProjectCharacter::TurnAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
-}
-
 void AFPSProjectCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-bool AFPSProjectCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)
-{
-	if (FPlatformMisc::SupportsTouchInput() || GetDefault<UInputSettings>()->bUseMouseForTouch)
-	{
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPSProjectCharacter::BeginTouch);
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &AFPSProjectCharacter::EndTouch);
-
-		//Commenting this out to be more consistent with FPS BP template.
-		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AFPSProjectCharacter::TouchUpdate);
-		return true;
-	}
-	
-	return false;
 }
 
 void AFPSProjectCharacter::ChangeView()
