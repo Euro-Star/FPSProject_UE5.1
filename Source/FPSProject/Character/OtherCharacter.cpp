@@ -124,13 +124,13 @@ void AOtherCharacter::RunStart()
 {
 	bRun = true;
 	//ZoomOut();
-	GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
 
 void AOtherCharacter::RunEnd()
 {
 	bRun = false;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 }
 
 void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)

@@ -17,7 +17,7 @@ void APersistentLevelScript::BeginPlay()
 	Info.UUID = 1;
 	Info.Linkage = 0;
 
-	UWidgetManager::Get()->AddWidget(EWidget::Loading);
+	UWidgetManager::Get()->AddWidget(EWidget::Loading, 10);
 	UWidgetManager::Get()->GetWidget<ULoadingWidget>(EWidget::Loading)->FakeLoading();
 
 	UGameplayStatics::LoadStreamLevel(this, "Map_1_Night", true, true, Info);

@@ -471,7 +471,7 @@ void AFPSProjectCharacter::ZoomOut()
 
 void AFPSProjectCharacter::Reload()
 {
-	if (bReload)
+	if (bReload || bPressedJump || GetCharacterMovement()->IsFalling())
 	{
 		return;
 	}
@@ -481,6 +481,11 @@ void AFPSProjectCharacter::Reload()
 		ZoomOut();
 	}
 
+	if (bRun)
+	{
+		RunEnd();
+	}
+
 	if (ReloadAnimation != nullptr)
 	{
 		UAnimInstance* AnimInstance = FPS_CharacterMesh->GetAnimInstance();
@@ -488,8 +493,8 @@ void AFPSProjectCharacter::Reload()
 
 		if (AnimInstance != nullptr)
 		{
-			AnimInstance->Montage_Play(ReloadAnimation, 1.f);
-			MagazineAnimInstance->Montage_Play(MagazineAnimation, 1.f);
+			//AnimInstance->Montage_Play(ReloadAnimation, 1.f);
+			MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
 			bReload = true;
 
 			GetWorld()->GetTimerManager().SetTimer(ReloadinTimer, FTimerDelegate::CreateLambda([&]() {
@@ -499,7 +504,7 @@ void AFPSProjectCharacter::Reload()
 					bReload = false;
 					GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
 				}
-				}), 3.23f, false);
+				}), 2.16f, false);
 		}
 	}
 }
@@ -507,16 +512,21 @@ void AFPSProjectCharacter::Reload()
 void AFPSProjectCharacter::RunEnd()
 {
 	bRun = false;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
 	SendReleasePlayerRun();
 }
 
 void AFPSProjectCharacter::RunStart()
 {
+	if (IsReload())
+	{
+		return;
+	}
+
 	bRun = true;
 	ZoomOut();
-	GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
 	SendPressPlayerRun();
 }

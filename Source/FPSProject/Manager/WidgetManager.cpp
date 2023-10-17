@@ -75,17 +75,17 @@ UWidgetManager* UWidgetManager::Get()
 	return WidgetManager;
 }
 
-void UWidgetManager::AddWidget(EWidget WidgetEnum)
+void UWidgetManager::AddWidget(EWidget WidgetEnum, int32 ZOrder)
 {
 	switch (WidgetEnum)
 	{
-	case EWidget::Login:		{	W_Login->AddToViewport(); break; }
-	case EWidget::CreateRoom:	{	W_CreateRoom->AddToViewport(); break; }
-	case EWidget::WaitingRoom:	{	W_WaitingRoom->AddToViewport(); break; }
-	case EWidget::Room:			{	W_Room->AddToViewport(); break; }
-	case EWidget::GamePlay:		{	W_GamePlay->AddToViewport(); break; }
-	case EWidget::Loading:		{	W_Loading->AddToViewport(); break; }
-	case EWidget::Dying:		{	W_Dying->AddToViewport(); break; }
+	case EWidget::Login:		{	W_Login->AddToViewport(ZOrder); break; }
+	case EWidget::CreateRoom:	{	W_CreateRoom->AddToViewport(ZOrder); break; }
+	case EWidget::WaitingRoom:	{	W_WaitingRoom->AddToViewport(ZOrder); break; }
+	case EWidget::Room:			{	W_Room->AddToViewport(ZOrder); break; }
+	case EWidget::GamePlay:		{	W_GamePlay->AddToViewport(ZOrder); break; }
+	case EWidget::Loading:		{	W_Loading->AddToViewport(ZOrder); break; }
+	case EWidget::Dying:		{	W_Dying->AddToViewport(ZOrder); break; }
 
 	default: 
 		break;

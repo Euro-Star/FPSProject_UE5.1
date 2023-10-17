@@ -131,7 +131,7 @@ protected:
 	float Timer = 0.0f;
 
 	UPROPERTY()
-	float Interval = 0.05f;
+	float Interval = 0.1f;
 public:
 	AFPSProjectCharacter();
 

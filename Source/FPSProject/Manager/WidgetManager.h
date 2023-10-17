@@ -43,7 +43,7 @@ public:
 	static UWidgetManager* WidgetManager;
 	static UWidgetManager* Get();
 
-	void AddWidget(EWidget WidgetEnum);
+	void AddWidget(EWidget WidgetEnum, int32 ZOrder = 0);
 	void RemoveWidget(EWidget WidgetEnum);
 
 	template<class T>

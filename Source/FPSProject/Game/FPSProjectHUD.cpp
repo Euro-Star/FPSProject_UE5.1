@@ -35,4 +35,6 @@ void AFPSProjectHUD::DrawHUD()
 void AFPSProjectHUD::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UWidgetManager::Get()->AddWidget(EWidget::GamePlay);
 }

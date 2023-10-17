@@ -6,9 +6,11 @@
 #include "Base/WidgetBase.h"
 #include "GamePlayWidget.generated.h"
 
-/**
- * 
- */
+class UImage;
+class UProgressBar;
+class UTextBlock;
+class AFPSProjectCharacter;
+
 UCLASS()
 class FPSPROJECT_API UGamePlayWidget : public UWidgetBase
 {
@@ -18,15 +20,24 @@ class FPSPROJECT_API UGamePlayWidget : public UWidgetBase
 public:
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* GunType;
+	UImage* GunType;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_Ammo;
+	UTextBlock* Text_Ammo;
 
 	UPROPERTY()
-	class AFPSProjectCharacter* Player;
+	AFPSProjectCharacter* Player;
+
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* HpBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Text_Hp;
 
 public:
 	UFUNCTION()
 	void UpdateAmmoText(FString CurrnetAmmo);
+
+	UFUNCTION()
+	void UpdateHp(int32 Hp);
 };
