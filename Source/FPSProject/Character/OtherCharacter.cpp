@@ -15,6 +15,9 @@ AOtherCharacter::AOtherCharacter()
 
 	Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
 	Gun->SetupAttachment(RootComponent);
+
+	Magazine = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Magazine"));
+	Magazine->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -22,8 +25,17 @@ void AOtherCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
+	//Gun->SetRelativeLocationAndRotation(FVector(-7.4f, 1.6f, -0.27f), FRotator(-83.0f, 156.0f, -64.8f));// x -64 y -83 z 156
+
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
-	Gun->SetRelativeLocationAndRotation(FVector(-7.4f, 1.6f, -0.27f), FRotator(-83.0f, 156.0f, -64.8f));// x -64 y -83 z 156
+	Gun->SetRelativeLocationAndRotation(FVector(-8.11f, 0.84f, -2.13f), FRotator(-78.2f, -68.1f, 161.9f));// y, z, x
+	Gun->SetWorldScale3D(FVector(0.75f, 0.75f, 0.75f));
+
+	Magazine->AttachToComponent(Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
+
+	AnimInstance = GetMesh()->GetAnimInstance();
+	MagazineAnimInstance = Gun->GetAnimInstance();
 }
 
 void AOtherCharacter::Tick(float DeltaTime)
@@ -133,6 +145,26 @@ void AOtherCharacter::RunEnd()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 }
 
+void AOtherCharacter::Reload()
+{
+	if (AnimInstance)
+	{
+		FOnMontageBlendingOutStarted CompleteDelegate;
+
+		CompleteDelegate.BindUObject(this, &AOtherCharacter::ReloadMontageComplete);
+
+		MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
+		MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
+		
+		bReload = true;
+	}
+}
+
+void AOtherCharacter::ReloadMontageComplete(UAnimMontage* AnimMontage, bool)
+{
+	bReload = false;
+}
+
 void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 {
 	switch (KeyValue)
@@ -193,6 +225,12 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 			{
 				bZoomIn = false;
 			}
+			break;
+		}
+		case 7:
+		{
+			Reload();
+			break;
 		}
 
 		default:
@@ -255,26 +293,6 @@ float AOtherCharacter::GetRight()
 	{
 		return 0.0f;
 	}
-}
-
-bool AOtherCharacter::IsRun()
-{
-	return bRun;
-}
-
-bool AOtherCharacter::IsJump()
-{
-	return bJump;
-}
-
-bool AOtherCharacter::IsZoomIn()
-{
-	return bZoomIn;
-}
-
-bool AOtherCharacter::IsDie()
-{
-	return bDie;
 }
 
 #pragma optimize("",on)

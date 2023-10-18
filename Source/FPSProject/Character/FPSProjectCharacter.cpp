@@ -137,6 +137,9 @@ void AFPSProjectCharacter::BeginPlay()
 	Scope->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Scope"));
 	Magazine->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
 
+	AnimInstance = FPS_CharacterMesh->GetAnimInstance();
+	MagazineAnimInstance = FP_Gun->GetAnimInstance();
+
 	// Show or hide the two versions of the gun based on whether or not we're using motion controllers.
 	if (bUsingMotionControllers)
 	{
@@ -416,11 +419,8 @@ void AFPSProjectCharacter::FireBullet()
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
-	// try and play a firing animation if specified
 	if (FireAnimation != nullptr)
 	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = FPS_CharacterMesh->GetAnimInstance();
 		if (AnimInstance != nullptr)
 		{
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
@@ -433,6 +433,11 @@ void AFPSProjectCharacter::ZoomIn()
 {
 	if (!bZoomIn)
 	{
+		if (bRun)
+		{
+			RunEnd();
+		}
+
 		bZoomIn = true;
 		bUseControllerRotationYaw = true;
 		SendPressPlayerZoomIn();
@@ -471,7 +476,7 @@ void AFPSProjectCharacter::ZoomOut()
 
 void AFPSProjectCharacter::Reload()
 {
-	if (bReload || bPressedJump || GetCharacterMovement()->IsFalling())
+	if (bReload || bPressedJump || GetCharacterMovement()->IsFalling() || CurrentAmmo == 30)
 	{
 		return;
 	}
@@ -488,25 +493,28 @@ void AFPSProjectCharacter::Reload()
 
 	if (ReloadAnimation != nullptr)
 	{
-		UAnimInstance* AnimInstance = FPS_CharacterMesh->GetAnimInstance();
-		UAnimInstance* MagazineAnimInstance = FP_Gun->GetAnimInstance();
-
 		if (AnimInstance != nullptr)
 		{
-			//AnimInstance->Montage_Play(ReloadAnimation, 1.f);
-			MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
-			bReload = true;
+			SendPlayerMove(EInputKey::Reload);
 
-			GetWorld()->GetTimerManager().SetTimer(ReloadinTimer, FTimerDelegate::CreateLambda([&]() {
-				{
-					GetWorld()->GetTimerManager().ClearTimer(ReloadinTimer);
-					CurrentAmmo = 30;
-					bReload = false;
-					GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
-				}
-				}), 2.16f, false);
+			//AnimInstance->Montage_Play(ReloadAnimation, 1.f);
+			FOnMontageBlendingOutStarted CompleteDelegate;
+
+			CompleteDelegate.BindUObject(this, &AFPSProjectCharacter::ReloadMontageComplete);
+
+			MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
+			MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
+
+			bReload = true;
 		}
 	}
+}
+
+void AFPSProjectCharacter::ReloadMontageComplete(UAnimMontage* AnimMontage, bool)
+{
+	CurrentAmmo = 30;
+	bReload = false;
+	GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
 }
 
 void AFPSProjectCharacter::RunEnd()

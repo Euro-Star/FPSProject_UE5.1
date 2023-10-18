@@ -101,9 +101,6 @@ protected:
 	FTimerHandle ZoominTimer;
 
 	UPROPERTY()
-	FTimerHandle ReloadinTimer;
-
-	UPROPERTY()
 	FTimerHandle OnFireTimer;
 
 	UPROPERTY()
@@ -132,6 +129,12 @@ protected:
 
 	UPROPERTY()
 	float Interval = 0.1f;
+
+	UPROPERTY()
+	UAnimInstance* AnimInstance;
+
+	UPROPERTY()
+	UAnimInstance* MagazineAnimInstance;
 public:
 	AFPSProjectCharacter();
 
@@ -162,6 +165,8 @@ protected:
 	void SendReleasePlayerZoomOut();
 
 	void SendPlayerMove(EInputKey Key, bool bPressd = true, bool bTcp = true);
+
+	void ReloadMontageComplete(UAnimMontage* AnimMontage, bool);
 
 protected:
 	UFUNCTION()

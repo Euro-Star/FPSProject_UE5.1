@@ -22,6 +22,21 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Gun;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
+	UStaticMeshComponent* Magazine;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* ReloadAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* MagazineAnimation;
+
+	UPROPERTY()
+	UAnimInstance* AnimInstance;
+
+	UPROPERTY()
+	UAnimInstance* MagazineAnimInstance;
+
 protected:
 	bool bUp = false;
 	bool bDown = false;
@@ -31,6 +46,7 @@ protected:
 	bool bJump = false;
 	bool bZoomIn = false;
 	bool bDie = false;
+	bool bReload = false;
 
 	int32 PlayerIndex;
 	int32 Hp = 100;
@@ -52,6 +68,8 @@ public:
 	void MoveRight(float Value);
 	void RunStart();
 	void RunEnd();
+	void Reload();
+	void ReloadMontageComplete(UAnimMontage* AnimMontage, bool);
 
 	void SetKeyDown(int32 KeyValue, bool Pressed);
 
@@ -66,15 +84,17 @@ public:
 	float GetRight();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsRun();
+	bool IsRun() { return bRun; };
 
 	UFUNCTION(BlueprintCallable)
-	bool IsJump();
+	bool IsJump() { return bJump; };
 
 	UFUNCTION(BlueprintCallable)
-	bool IsZoomIn();
+	bool IsZoomIn() { return bZoomIn; };
 
 	UFUNCTION(BlueprintCallable)
-	bool IsDie();
+	bool IsDie() { return bDie; };
 
+	UFUNCTION(BlueprintCallable)
+	bool IsReload() { return bReload; };
 };
