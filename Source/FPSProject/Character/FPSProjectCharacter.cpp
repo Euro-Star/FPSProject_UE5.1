@@ -137,7 +137,7 @@ void AFPSProjectCharacter::BeginPlay()
 	Scope->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Scope"));
 	Magazine->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
 
-	AnimInstance = FPS_CharacterMesh->GetAnimInstance();
+	AnimInstance = TPS_Mesh->GetAnimInstance();
 	MagazineAnimInstance = FP_Gun->GetAnimInstance();
 
 	// Show or hide the two versions of the gun based on whether or not we're using motion controllers.
@@ -497,11 +497,11 @@ void AFPSProjectCharacter::Reload()
 		{
 			SendPlayerMove(EInputKey::Reload);
 
-			//AnimInstance->Montage_Play(ReloadAnimation, 1.f);
 			FOnMontageBlendingOutStarted CompleteDelegate;
 
 			CompleteDelegate.BindUObject(this, &AFPSProjectCharacter::ReloadMontageComplete);
 
+			AnimInstance->Montage_Play(ReloadAnimation, 1.0f);
 			MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
 			MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
 

@@ -69,7 +69,6 @@ public:
 	void RunStart();
 	void RunEnd();
 	void Reload();
-	void ReloadMontageComplete(UAnimMontage* AnimMontage, bool);
 
 	void SetKeyDown(int32 KeyValue, bool Pressed);
 
@@ -94,7 +93,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDie() { return bDie; };
-
-	UFUNCTION(BlueprintCallable)
-	bool IsReload() { return bReload; };
 };

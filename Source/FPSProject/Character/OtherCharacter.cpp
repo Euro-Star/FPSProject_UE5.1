@@ -149,20 +149,9 @@ void AOtherCharacter::Reload()
 {
 	if (AnimInstance)
 	{
-		FOnMontageBlendingOutStarted CompleteDelegate;
-
-		CompleteDelegate.BindUObject(this, &AOtherCharacter::ReloadMontageComplete);
-
-		MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
-		MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
-		
-		bReload = true;
+		AnimInstance->Montage_Play(ReloadAnimation, 1.0f);
+		MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);;
 	}
-}
-
-void AOtherCharacter::ReloadMontageComplete(UAnimMontage* AnimMontage, bool)
-{
-	bReload = false;
 }
 
 void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
