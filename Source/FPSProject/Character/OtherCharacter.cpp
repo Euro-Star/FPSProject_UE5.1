@@ -4,6 +4,8 @@
 #include "OtherCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/FPSProjectGameState.h"
+#include "Server/Packets.h"
+#include "Game/FPSProjectGameInstance.h"
 
 #pragma optimize("", off)
 
@@ -90,14 +92,11 @@ void AOtherCharacter::Move()
 	}
 }
 
-
 void AOtherCharacter::Attacked()
 {
-	UAnimInstance* HitAnimInstance = GetMesh()->GetAnimInstance();
-
-	if (HitAnimInstance != nullptr)
+	if (AnimInstance != nullptr)
 	{
-		HitAnimInstance->Montage_Play(HitAnim, 1.f);
+		AnimInstance->Montage_Play(HitAnimation, 1.f);
 	}
 }
 
@@ -234,7 +233,7 @@ int32 AOtherCharacter::GetPlayerIndex()
 	return PlayerIndex;
 }
 
-void AOtherCharacter::ChangeHp(int32 _Hp)
+void AOtherCharacter::UpdateHp(int32 _Hp)
 {
 	Hp = _Hp;
 }

@@ -17,9 +17,6 @@ public:
 
 public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UAnimMontage* HitAnim;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Gun;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
@@ -30,6 +27,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* MagazineAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* HitAnimation;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	//UAnimMontage* HipFireAnimation;
+	//
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	//UAnimMontage* ZoomFireAnimation;
 
 	UPROPERTY()
 	UAnimInstance* AnimInstance;
@@ -73,7 +79,7 @@ public:
 	void SetKeyDown(int32 KeyValue, bool Pressed);
 
 	int32 GetPlayerIndex();
-	void ChangeHp(int32 _Hp);
+	void UpdateHp(int32 _Hp);
 	void SetPlayerIndex(int32 _PlayerIndex);
 
 	UFUNCTION(BlueprintCallable)

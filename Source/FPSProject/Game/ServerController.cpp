@@ -191,5 +191,17 @@ void AServerController::Die(FRecvPacket_Wrapper& packetWrapper)
 
 void AServerController::ChangeHealth(FRecvPacket_Wrapper& packetWrapper)
 {
-	INIT_FUNCTION(Die)
+	INIT_FUNCTION(ChangeHealth)
+
+	if (ptr)
+	{
+		if (ptr->PlayerIndex == AFPSProjectGameState::Get()->GetPlayerIndex())
+		{
+			AFPSProjectGameState::Get()->GetPlayer()->UpdateHp(ptr->CurrentHealth);
+		}
+		else
+		{
+			AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->UpdateHp(ptr->CurrentHealth);
+		}
+	}
 }

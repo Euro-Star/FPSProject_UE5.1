@@ -164,8 +164,6 @@ void AFPSProjectCharacter::Tick(float DeltaTime)
 		if (!(FMath::RoundToZero(PlayerRotation_Y) == FMath::RoundToZero(PrevRotation_Y)))
 		{
 			PrevRotation_Y = SendPlayerRotation();
-			++testnum;
-			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_IntToString(testnum));
 		}
 
 		Timer = 0.0f;
@@ -385,7 +383,7 @@ void AFPSProjectCharacter::OnFire()
 				return;
 			}
 		}
-		}), 0.1f, true);
+		}), 0.12f, true);
 }
 
 void AFPSProjectCharacter::OnFireReleased()
@@ -419,12 +417,15 @@ void AFPSProjectCharacter::FireBullet()
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
-	if (FireAnimation != nullptr)
+	if (AnimInstance)
 	{
-		if (AnimInstance != nullptr)
+		if (IsZoomin())
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-
+			AnimInstance->Montage_Play(ZoomFireAnimation, 1.0f);
+		}
+		else
+		{
+			AnimInstance->Montage_Play(HipFireAnimation, 1.0f);
 		}
 	}
 }
@@ -544,6 +545,21 @@ void AFPSProjectCharacter::Die()
 	bDie = true;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
 	UWidgetManager::Get()->AddWidget(EWidget::Dying);
+}
+
+void AFPSProjectCharacter::UpdateHp(int32 _Hp)
+{
+	if (Hp > _Hp)
+	{
+		if (AnimInstance)
+		{
+			AnimInstance->Montage_Play(HitAnimation, 1.0f);
+		}
+	}
+
+	Hp = _Hp;
+
+	UWidgetManager::Get()->GetWidget<UGamePlayWidget>(EWidget::GamePlay)->UpdateHp(Hp);
 }
 
 void AFPSProjectCharacter::MoveForward(float Value)

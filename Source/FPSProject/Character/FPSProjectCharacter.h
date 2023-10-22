@@ -85,15 +85,9 @@ public:
 	class AFPSProjectGameState* GameState;
 
 protected:
-	UPROPERTY()
 	bool bFps = true;
-
-	UPROPERTY()
 	bool bZoomIn = false;
-
-	UPROPERTY()
 	bool bReload = false;
-
 	bool bRun = false;
 	bool bDie = false;
 
@@ -114,6 +108,9 @@ protected:
 
 	UPROPERTY()
 	int32 CurrentAmmo = 30;
+
+	UPROPERTY()
+	int32 Hp = 100;
 
 	UPROPERTY()
 	int32 CurrentColor;
@@ -143,8 +140,6 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void Jump() override;
 	virtual void StopJumping() override;
-
-	int32 testnum = 0;
 
 	float SendPlayerRotation();
 
@@ -199,6 +194,9 @@ public:
 	UFUNCTION()
 	void Die();
 
+	UFUNCTION()
+	void UpdateHp(int32 _Hp);
+
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -230,6 +228,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* MagazineAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* HitAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* HipFireAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* ZoomFireAnimation;
 
 	/** Whether to use motion controller location for aiming. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
