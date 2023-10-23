@@ -14,6 +14,7 @@ class UCameraComponent;
 class UMotionControllerComponent;
 class UAnimMontage;
 class USoundBase;
+class UParticleSystemComponent;
 
 UCLASS(config=Game)
 class AFPSProjectCharacter : public ACharacter
@@ -244,6 +245,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector BulletOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystemComponent* P_FirePlash;
 
 protected:
 	

@@ -28,6 +28,7 @@
 #include "Kismet/KismetStringLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
+#include "Particles/ParticleSystemComponent.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -108,7 +109,7 @@ AFPSProjectCharacter::AFPSProjectCharacter()
 
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(0.0f, 49.4f, 6.6f));
+	//FP_MuzzleLocation->SetRelativeLocation(FVector(0.0f, 49.4f, 6.6f));
 
 	GunOffset = FVector(75.0f, 0.0f, -5.0f);
 
@@ -117,6 +118,9 @@ AFPSProjectCharacter::AFPSProjectCharacter()
 
 	Magazine = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Magazine"));
 	Magazine->SetupAttachment(RootComponent);
+
+	P_FirePlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FirePlash"));
+	P_FirePlash->SetupAttachment(FP_Gun);
 }
 
 void AFPSProjectCharacter::BeginPlay()
@@ -343,15 +347,6 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void AFPSProjectCharacter::OnFire()
 {
-	FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
-	FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 2000.0f;
-
-	FHitResult LineTraceResult;
-	FCollisionQueryParams DefaltParams;
-
-	//GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
-	//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
-
 	if (bReload)
 	{
 		return;
@@ -397,18 +392,31 @@ void AFPSProjectCharacter::FireBullet()
 	if (World != nullptr)
 	{
 		const FRotator SpawnRotation = ThirdPersonCameraComponent->GetComponentRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = ThirdPersonCameraComponent->GetComponentLocation();
+		//const FVector SpawnLocation = ThirdPersonCameraComponent->GetComponentLocation();
+		const FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
+
+		const FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
+		const FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 2000.0f;
+
+		FHitResult LineTraceResult;
+		FCollisionQueryParams DefaltParams;
+
+		GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
+		DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
+
+		const FVector TargetPoint = FVector(LineTraceResult.ImpactPoint - SpawnLocation).GetSafeNormal();
 
 		ABulletBase* Bullet = nullptr;
 		Bullet = mBulletManager->UseBullet(Bullet, EBulletType::Rifle);
 		if (Bullet)
 		{
-			Bullet->UseBullet(SpawnLocation, SpawnRotation, ThirdPersonCameraComponent->GetForwardVector());
+			//Bullet->UseBullet(SpawnLocation, SpawnRotation, ThirdPersonCameraComponent->GetForwardVector());
+			Bullet->UseBullet(SpawnLocation, SpawnRotation, TargetPoint);
 
 			CurrentAmmo -= 1;
 
 			GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
+			P_FirePlash->Activate(true);
 		}
 	}
 
