@@ -20,6 +20,12 @@ public:
 	USkeletalMeshComponent* Gun;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
+	USceneComponent* MuzzleLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystemComponent* P_FirePlash;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
 	UStaticMeshComponent* Magazine;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -30,6 +36,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* HitAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* HipFireAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* ZoomFireAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	USoundBase* FireSound;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	//UAnimMontage* HipFireAnimation;
@@ -53,10 +68,12 @@ protected:
 	bool bZoomIn = false;
 	bool bDie = false;
 	bool bReload = false;
+	bool bOnFire = false;
 
 	int32 PlayerIndex;
 	int32 Hp = 100;
 	FTimerHandle DieTimer;
+	FTimerHandle OnFireTimer;
 
 protected:
 	virtual void BeginPlay() override;
@@ -75,6 +92,9 @@ public:
 	void RunStart();
 	void RunEnd();
 	void Reload();
+	void OnFire();
+	void OnFireReleased();
+	void Fire();
 
 	void SetKeyDown(int32 KeyValue, bool Pressed);
 

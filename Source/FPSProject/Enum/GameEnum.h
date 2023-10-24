@@ -30,7 +30,8 @@ enum class EInputKey : uint8
 	Jump,
 	Run,
 	ZoomIn,
-	Reload
+	Reload,
+	OnFire
 };
 
 UENUM(BlueprintType)

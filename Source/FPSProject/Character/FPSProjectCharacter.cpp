@@ -352,7 +352,8 @@ void AFPSProjectCharacter::OnFire()
 		return;
 	}
 	if (CurrentAmmo > 0)
-	{		
+	{	
+		SendPlayerMove(EInputKey::OnFire);
 		FireBullet();
 	}
 	else
@@ -364,7 +365,7 @@ void AFPSProjectCharacter::OnFire()
 		{
 			if (bReload)
 			{
-				GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
+				OnFireReleased();
 				return;
 			}
 
@@ -374,7 +375,7 @@ void AFPSProjectCharacter::OnFire()
 			}
 			else
 			{
-				GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
+				OnFireReleased();
 				return;
 			}
 		}
@@ -383,6 +384,7 @@ void AFPSProjectCharacter::OnFire()
 
 void AFPSProjectCharacter::OnFireReleased()
 {
+	SendPlayerMove(EInputKey::OnFire, false);
 	GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
 }
 
@@ -391,18 +393,18 @@ void AFPSProjectCharacter::FireBullet()
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
-		const FRotator SpawnRotation = ThirdPersonCameraComponent->GetComponentRotation();
+		const FRotator SpawnRotation = FP_MuzzleLocation->GetComponentRotation();
 		//const FVector SpawnLocation = ThirdPersonCameraComponent->GetComponentLocation();
 		const FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
 
 		const FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
-		const FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 2000.0f;
+		const FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 100000.0f;
 
 		FHitResult LineTraceResult;
 		FCollisionQueryParams DefaltParams;
 
 		GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
-		DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
+		//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
 
 		const FVector TargetPoint = FVector(LineTraceResult.ImpactPoint - SpawnLocation).GetSafeNormal();
 
@@ -543,7 +545,7 @@ void AFPSProjectCharacter::RunStart()
 
 	bRun = true;
 	ZoomOut();
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 
 	SendPressPlayerRun();
 }

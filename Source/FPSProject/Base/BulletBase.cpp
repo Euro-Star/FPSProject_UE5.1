@@ -66,6 +66,7 @@ void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 void ABulletBase::UseBullet(FVector Location, FRotator Rotation, FVector ForwardVector)
 {
 	SetActorLocation(Location);
+	SetActorRotation(Rotation);
 	TargetVector = ForwardVector;
 	SetActorTickEnabled(true);
 	BulletMesh->AddForce(TargetVector * mSpeed);

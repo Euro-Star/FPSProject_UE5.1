@@ -6,6 +6,8 @@
 #include "Game/FPSProjectGameState.h"
 #include "Server/Packets.h"
 #include "Game/FPSProjectGameInstance.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 #pragma optimize("", off)
 
@@ -20,6 +22,12 @@ AOtherCharacter::AOtherCharacter()
 
 	Magazine = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Magazine"));
 	Magazine->SetupAttachment(RootComponent);
+
+	MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+	MuzzleLocation->SetupAttachment(Gun);
+
+	P_FirePlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FirePlash"));
+	P_FirePlash->SetupAttachment(Gun);
 }
 
 // Called when the game starts or when spawned
@@ -66,6 +74,7 @@ void AOtherCharacter::BeginDestroy()
 	if (GetWorld())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(DieTimer);
+		GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
 	}
 }
 
@@ -135,7 +144,7 @@ void AOtherCharacter::RunStart()
 {
 	bRun = true;
 	//ZoomOut();
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 }
 
 void AOtherCharacter::RunEnd()
@@ -150,6 +159,44 @@ void AOtherCharacter::Reload()
 	{
 		AnimInstance->Montage_Play(ReloadAnimation, 1.0f);
 		MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);;
+	}
+}
+
+void AOtherCharacter::OnFire()
+{
+	Fire();
+
+	GetWorld()->GetTimerManager().SetTimer(OnFireTimer, FTimerDelegate::CreateLambda([&]() {
+		{
+			Fire();
+		}
+		}), 0.12f, true);
+}
+
+void AOtherCharacter::OnFireReleased()
+{
+	GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
+}
+
+void AOtherCharacter::Fire()
+{
+	P_FirePlash->Activate(true);
+
+	if (FireSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	}
+
+	if (AnimInstance)
+	{
+		if (IsZoomIn())
+		{
+			AnimInstance->Montage_Play(ZoomFireAnimation, 1.0f);
+		}
+		else
+		{
+			AnimInstance->Montage_Play(HipFireAnimation, 1.0f);
+		}
 	}
 }
 
@@ -218,6 +265,18 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 		case 7:
 		{
 			Reload();
+			break;
+		}
+		case 8:
+		{
+			if (Pressed)
+			{
+				OnFire();
+			}
+			else
+			{
+				OnFireReleased();
+			}
 			break;
 		}
 
