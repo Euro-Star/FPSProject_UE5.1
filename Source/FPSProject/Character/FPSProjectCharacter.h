@@ -91,6 +91,7 @@ protected:
 	bool bReload = false;
 	bool bRun = false;
 	bool bDie = false;
+	bool bFire = false;
 
 	UPROPERTY()
 	FTimerHandle ZoominTimer;
@@ -127,6 +128,9 @@ protected:
 
 	UPROPERTY()
 	float Interval = 0.1f;
+
+	UPROPERTY()
+	float BulletSpread = 0.0f;
 
 	UPROPERTY()
 	UAnimInstance* AnimInstance;
@@ -175,6 +179,10 @@ protected:
 	void RunStart();
 	UFUNCTION()
 	void RunEnd();
+	UFUNCTION()
+	void HipFire();
+	UFUNCTION()
+	void ReleaseHipFire();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -191,6 +199,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDie() { return bDie; };
+
+	UFUNCTION(BlueprintCallable)
+	bool IsFire() { return bFire; };
 
 	UFUNCTION()
 	void Die();

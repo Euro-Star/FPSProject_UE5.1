@@ -44,7 +44,7 @@ void ABulletBase::Tick(float DeltaTime)
 
 void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UGameplayStatics::SpawnDecalAttached(M_BulletHoleArray[FMath::RandRange(0, 2)], FVector(10.0f, 10.0f, 10.0f), OtherComp, NAME_None, Hit.Location, FRotationMatrix::MakeFromX(Hit.Normal).Rotator(), EAttachLocation::KeepWorldPosition, 10.0f);
+	UGameplayStatics::SpawnDecalAttached(M_BulletHoleArray[FMath::RandRange(0, 2)], FVector(100.0f, 5.0f, 5.0f), OtherComp, NAME_None, Hit.Location, FRotationMatrix::MakeFromX(Hit.Normal).Rotator(), EAttachLocation::KeepWorldPosition, 10.0f);
 	WaitBullet();
 
 	if (Cast<AOtherCharacter>(OtherActor) != nullptr)

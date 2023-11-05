@@ -29,6 +29,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -353,6 +354,14 @@ void AFPSProjectCharacter::OnFire()
 	}
 	if (CurrentAmmo > 0)
 	{	
+		bFire = true;
+		bUseControllerRotationYaw = true;
+
+		if (!IsZoomin())
+		{
+			HipFire();
+		}
+
 		SendPlayerMove(EInputKey::OnFire);
 		FireBullet();
 	}
@@ -371,6 +380,15 @@ void AFPSProjectCharacter::OnFire()
 
 			if (CurrentAmmo > 0)
 			{
+				if (BulletSpread >= 1.0f)
+				{
+					BulletSpread = 1.0f;
+				}
+				else
+				{
+					BulletSpread += 0.1f;
+				}
+
 				FireBullet();
 			}
 			else
@@ -384,6 +402,15 @@ void AFPSProjectCharacter::OnFire()
 
 void AFPSProjectCharacter::OnFireReleased()
 {
+	bFire = false;
+	bUseControllerRotationYaw = false;
+
+	if (!IsZoomin())
+	{
+		ReleaseHipFire();
+	}
+
+	BulletSpread = 0.0f;
 	SendPlayerMove(EInputKey::OnFire, false);
 	GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
 }
@@ -393,21 +420,27 @@ void AFPSProjectCharacter::FireBullet()
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
+		const float RandAngle = FMath::RandRange(0.0f, 2.0f) * PI;
+		const float RandFloat = FMath::RandRange(0.0f, 2000.0f * BulletSpread);
+		const FVector RandomPoint = FVector(0.0f, FMath::Cos(RandAngle) * RandFloat, FMath::Sin(RandAngle) * RandFloat);
+
+		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_FloatToString(RandomPoint.Y));
+		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Blue, UKismetStringLibrary::Conv_FloatToString(RandomPoint.Z));
+
 		const FRotator SpawnRotation = FP_MuzzleLocation->GetComponentRotation();
-		//const FVector SpawnLocation = ThirdPersonCameraComponent->GetComponentLocation();
 		const FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
 
 		const FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
-		const FVector LineTraceEnd = ThirdPersonCameraComponent->GetComponentLocation() + ThirdPersonCameraComponent->GetForwardVector() * 100000.0f;
+		const FVector LineTraceEnd = (ThirdPersonCameraComponent->GetComponentLocation() + RandomPoint) + ThirdPersonCameraComponent->GetForwardVector() * 100000.0f;
 
 		FHitResult LineTraceResult;
 		FCollisionQueryParams DefaltParams;
 
 		GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
-		//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
+		DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
 
 		const FVector TargetPoint = FVector(LineTraceResult.ImpactPoint - SpawnLocation).GetSafeNormal();
-
+	
 		ABulletBase* Bullet = nullptr;
 		Bullet = mBulletManager->UseBullet(Bullet, EBulletType::Rifle);
 		if (Bullet)
@@ -496,6 +529,10 @@ void AFPSProjectCharacter::Reload()
 	{
 		ZoomOut();
 	}
+	else
+	{
+		ReleaseHipFire();
+	}
 
 	if (bRun)
 	{
@@ -536,6 +573,41 @@ void AFPSProjectCharacter::RunEnd()
 	SendReleasePlayerRun();
 }
 
+void AFPSProjectCharacter::HipFire()
+{
+	if (bRun)
+	{
+		RunEnd();
+	}
+
+	bUseControllerRotationYaw = true;
+	GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
+		{
+			ZoominFrame += 0.1f;
+			ThirdPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
+			if (ZoominFrame >= 0.5f)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(ZoominTimer);
+			}
+		}
+		}), 0.01f, true);
+}
+
+void AFPSProjectCharacter::ReleaseHipFire()
+{
+	bUseControllerRotationYaw = false;
+	GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
+		{
+			ZoominFrame -= 0.1f;
+			ThirdPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
+			if (ZoominFrame <= 0.0f)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(ZoominTimer);
+			}
+		}
+		}), 0.01f, true);
+}
+
 void AFPSProjectCharacter::RunStart()
 {
 	if (IsReload())
@@ -545,6 +617,7 @@ void AFPSProjectCharacter::RunStart()
 
 	bRun = true;
 	ZoomOut();
+	OnFireReleased();
 	GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 
 	SendPressPlayerRun();
