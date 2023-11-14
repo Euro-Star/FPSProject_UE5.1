@@ -93,6 +93,10 @@ protected:
 	bool bDie = false;
 	bool bFire = false;
 
+	float MoveForwardValue = 0.0f;
+	float MoveRightValue = 0.0f;
+	float AngleValue = 120.0f;
+
 	UPROPERTY()
 	FTimerHandle ZoominTimer;
 
@@ -168,6 +172,8 @@ protected:
 
 	void ReloadMontageComplete(UAnimMontage* AnimMontage, bool);
 
+	void ThirdPersonMotionCompensate(float _DeltaTime);
+
 protected:
 	UFUNCTION()
 	void ZoomIn();
@@ -190,6 +196,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetCurrentAmmo() { return CurrentAmmo; };
+
+	UFUNCTION(BlueprintCallable)
+	float GetMoveForward() { return MoveForwardValue; };
+
+	UFUNCTION(BlueprintCallable)
+	float GetMoveRight() { return MoveRightValue; };
 
 	UFUNCTION(BlueprintCallable)
 	bool IsReload() { return bReload; };

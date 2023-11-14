@@ -160,6 +160,8 @@ void AFPSProjectCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	ThirdPersonMotionCompensate(DeltaTime);
+
 	Timer += DeltaTime;
 
 	if (Timer >= Interval)
@@ -354,7 +356,6 @@ void AFPSProjectCharacter::OnFire()
 	}
 	if (CurrentAmmo > 0)
 	{	
-		bFire = true;
 		bUseControllerRotationYaw = true;
 
 		if (!IsZoomin())
@@ -362,6 +363,7 @@ void AFPSProjectCharacter::OnFire()
 			HipFire();
 		}
 
+		bFire = true;
 		SendPlayerMove(EInputKey::OnFire);
 		FireBullet();
 	}
@@ -402,7 +404,6 @@ void AFPSProjectCharacter::OnFire()
 
 void AFPSProjectCharacter::OnFireReleased()
 {
-	bFire = false;
 	bUseControllerRotationYaw = false;
 
 	if (!IsZoomin())
@@ -410,6 +411,7 @@ void AFPSProjectCharacter::OnFireReleased()
 		ReleaseHipFire();
 	}
 
+	bFire = false;
 	BulletSpread = 0.0f;
 	SendPlayerMove(EInputKey::OnFire, false);
 	GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
@@ -424,9 +426,6 @@ void AFPSProjectCharacter::FireBullet()
 		const float RandFloat = FMath::RandRange(0.0f, 2000.0f * BulletSpread);
 		const FVector RandomPoint = FVector(0.0f, FMath::Cos(RandAngle) * RandFloat, FMath::Sin(RandAngle) * RandFloat);
 
-		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_FloatToString(RandomPoint.Y));
-		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Blue, UKismetStringLibrary::Conv_FloatToString(RandomPoint.Z));
-
 		const FRotator SpawnRotation = FP_MuzzleLocation->GetComponentRotation();
 		const FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
 
@@ -437,7 +436,7 @@ void AFPSProjectCharacter::FireBullet()
 		FCollisionQueryParams DefaltParams;
 
 		GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
-		DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
+		//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
 
 		const FVector TargetPoint = FVector(LineTraceResult.ImpactPoint - SpawnLocation).GetSafeNormal();
 	
@@ -475,9 +474,9 @@ void AFPSProjectCharacter::FireBullet()
 
 void AFPSProjectCharacter::ZoomIn()
 {
-	if (!bZoomIn)
+	if (!IsZoomin())
 	{
-		if (bRun)
+		if (IsRun())
 		{
 			RunEnd();
 		}
@@ -565,6 +564,37 @@ void AFPSProjectCharacter::ReloadMontageComplete(UAnimMontage* AnimMontage, bool
 	GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
 }
 
+void AFPSProjectCharacter::ThirdPersonMotionCompensate(float _DeltaTime)
+{
+	if (IsFire() || IsZoomin())
+	{
+		const FTransform CurrentTransform = TPS_Mesh->GetRelativeTransform();
+		const FTransform TargetTransform = FTransform(FRotator(0.0f, -90.0f, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
+		const FTransform ResultTransform = UKismetMathLibrary::TInterpTo(CurrentTransform, TargetTransform, _DeltaTime, 22.5f);
+
+		TPS_Mesh->SetRelativeRotation(FRotator(0.0f, ResultTransform.Rotator().Yaw, 0.0f));
+	}
+	else
+	{
+		if (GetMoveForward() != 0.0f || GetMoveRight() != 0.0f)
+		{
+			const FTransform CurrentTransform = TPS_Mesh->GetRelativeTransform();
+			const FRotator TargetRotator = UKismetMathLibrary::Conv_VectorToRotator(FVector(GetMoveForward(), GetMoveRight(), 1.0f));
+			const FTransform TargetTransform = FTransform(FRotator(0.0f, TargetRotator.Yaw - 90.0f, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
+			
+			const FTransform ResultTransform = UKismetMathLibrary::TInterpTo(CurrentTransform, TargetTransform, _DeltaTime, 11.25f);
+			
+			TPS_Mesh->SetRelativeRotation(FRotator(0.0f, ResultTransform.Rotator().Yaw, 0.0f));
+
+			const FRotator ResultQuat = UKismetMathLibrary::Conv_VectorToRotator(ThirdPersonCameraComponent->GetForwardVector());
+			SetActorRotation(FRotator(0.0f, ResultQuat.Yaw, 0.0f));
+
+			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_FloatToString(ResultQuat.Yaw));
+		}
+		
+	}
+}
+
 void AFPSProjectCharacter::RunEnd()
 {
 	bRun = false;
@@ -595,17 +625,20 @@ void AFPSProjectCharacter::HipFire()
 
 void AFPSProjectCharacter::ReleaseHipFire()
 {
-	bUseControllerRotationYaw = false;
-	GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
-		{
-			ZoominFrame -= 0.1f;
-			ThirdPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
-			if (ZoominFrame <= 0.0f)
+	if (IsFire())
+	{
+		bUseControllerRotationYaw = false;
+		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
 			{
-				GetWorld()->GetTimerManager().ClearTimer(ZoominTimer);
+				ZoominFrame -= 0.1f;
+				ThirdPersonCameraComponent->SetFieldOfView(FMath::Lerp(ZoomOutValue, ZoomInValue, ZoominFrame));
+				if (ZoominFrame <= 0.0f)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(ZoominTimer);
+				}
 			}
-		}
-		}), 0.01f, true);
+			}), 0.01f, true);
+	}
 }
 
 void AFPSProjectCharacter::RunStart()
@@ -647,6 +680,8 @@ void AFPSProjectCharacter::UpdateHp(int32 _Hp)
 
 void AFPSProjectCharacter::MoveForward(float Value)
 {
+	MoveForwardValue = Value;
+
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
@@ -656,6 +691,8 @@ void AFPSProjectCharacter::MoveForward(float Value)
 
 void AFPSProjectCharacter::MoveRight(float Value)
 {
+	MoveRightValue = Value;
+
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
