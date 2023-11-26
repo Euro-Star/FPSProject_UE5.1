@@ -28,4 +28,6 @@ public:
 	UFUNCTION()
 	void OnclickedToLobby();
 
+	UFUNCTION()
+	void SetTextRank(int32 PlayerNum, int32 Rank);
 };

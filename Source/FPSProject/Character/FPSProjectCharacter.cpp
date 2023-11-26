@@ -30,6 +30,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "Widget/DyingWidget.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -660,10 +661,11 @@ void AFPSProjectCharacter::RunStart()
 	SendPressPlayerRun();
 }
 
-void AFPSProjectCharacter::Die()
+void AFPSProjectCharacter::Die(int32 Rank)
 {
 	bDie = true;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
+	UWidgetManager::Get()->GetWidget<UDyingWidget>(EWidget::Dying)->SetTextRank(AFPSProjectGameState::Get()->GetPlayerNum(), Rank);
 	UWidgetManager::Get()->AddWidget(EWidget::Dying);
 }
 

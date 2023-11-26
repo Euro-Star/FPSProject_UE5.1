@@ -218,7 +218,7 @@ public:
 	bool IsFire() { return bFire; };
 
 	UFUNCTION()
-	void Die();
+	void Die(int32 Rank);
 
 	UFUNCTION()
 	void UpdateHp(int32 _Hp);

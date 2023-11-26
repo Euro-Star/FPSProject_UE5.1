@@ -60,8 +60,9 @@ void AServerController::PlayerSpawn(FRecvPacket_Wrapper& packetWrapper)
 	{
 		TArray<ASpawnPoint*> SpawnPoint = AFPSProjectGameState::Get()->GetSpawnPoint();
 		AFPSProjectGameState::Get()->SetPlayerIndex(ptr->PlayerIndex);
+		AFPSProjectGameState::Get()->SetPlayerNum(ptr->PlayerNum);
 
-		for (int32 i = 0; i < SpawnPoint.Num(); ++i)
+		for (int32 i = 0; i < ptr->PlayerNum; ++i)
 		{
 			if (i == AFPSProjectGameState::Get()->GetPlayerIndex())
 			{
@@ -182,7 +183,7 @@ void AServerController::Die(FRecvPacket_Wrapper& packetWrapper)
 		if (ptr->PlayerIndex == AFPSProjectGameState::Get()->GetPlayerIndex())
 		{
 			AFPSProjectGameState::Get()->GetPlayer()->UpdateHp(0);
-			AFPSProjectGameState::Get()->GetPlayer()->Die();
+			AFPSProjectGameState::Get()->GetPlayer()->Die(ptr->Rank);
 		}
 		else
 		{
@@ -210,5 +211,11 @@ void AServerController::ChangeHealth(FRecvPacket_Wrapper& packetWrapper)
 
 void AServerController::GameEnd(FRecvPacket_Wrapper& packetWrapper)
 {
+	INIT_FUNCTION(GameEnd)
 
+	if(ptr)
+	{
+		UWidgetManager::Get()->AddWidget(EWidget::Dying);
+		AFPSProjectGameState::Get()->SetGameState(false);
+	}
 }

@@ -134,6 +134,9 @@ struct FRecvPacket_PlayerSpawn
 
 	UPROPERTY()
 	TArray<int32> SpawnIndex;
+
+	UPROPERTY()
+	int32 PlayerNum;
 };
 
 
@@ -313,6 +316,9 @@ struct FRecvPacket_Die
 
 	UPROPERTY()
 	int32 PlayerIndex;
+
+	UPROPERTY()
+	int32 Rank;
 };
 
 USTRUCT()

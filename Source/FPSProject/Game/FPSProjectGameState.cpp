@@ -112,3 +112,8 @@ void AFPSProjectGameState::SetGameState(bool _bGameState)
 {
 	bGameState = _bGameState;
 }
+
+void AFPSProjectGameState::SetPlayerNum(int32 _PlayerNum)
+{
+	PlayerNum = _PlayerNum;
+}

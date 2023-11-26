@@ -48,6 +48,7 @@ private:
 	TArray<AOtherCharacter*> OtherCharaterArray;
 
 	bool bGameState = false;
+	int32 PlayerNum = 0;
 
 public:
 	UFUNCTION()
@@ -71,6 +72,9 @@ public:
 	inline TObjectPtr<AOtherCharacter> GetOtherCharacter(int32 Index);
 
 	void SetGameState(bool _bGameState);
-	bool GetGameState() { return bGameState; };
+	bool GetGameState() { return bGameState; }
+
+	void SetPlayerNum(int32 _PlayerNum);
+	int32 GetPlayerNum() { return PlayerNum; };
 
 };
