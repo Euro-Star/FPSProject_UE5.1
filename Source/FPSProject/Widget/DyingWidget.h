@@ -7,6 +7,7 @@
 #include "DyingWidget.generated.h"
 
 class UButton;
+class UTextBlock;
 
 UCLASS()
 class FPSPROJECT_API UDyingWidget : public UWidgetBase
@@ -18,6 +19,9 @@ class FPSPROJECT_API UDyingWidget : public UWidgetBase
 public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* Btn_ToLobby;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Text_Rank;
 
 public:
 

@@ -66,6 +66,7 @@ void AServerController::PlayerSpawn(FRecvPacket_Wrapper& packetWrapper)
 			if (i == AFPSProjectGameState::Get()->GetPlayerIndex())
 			{
 				AFPSProjectGameState::Get()->GetPlayer()->SetActorLocation(SpawnPoint[ptr->SpawnIndex[i]]->GetActorLocation());
+				AFPSProjectGameState::Get()->SetGameState(true);
 			}
 			else
 			{
@@ -180,6 +181,7 @@ void AServerController::Die(FRecvPacket_Wrapper& packetWrapper)
 	{
 		if (ptr->PlayerIndex == AFPSProjectGameState::Get()->GetPlayerIndex())
 		{
+			AFPSProjectGameState::Get()->GetPlayer()->UpdateHp(0);
 			AFPSProjectGameState::Get()->GetPlayer()->Die();
 		}
 		else
@@ -204,4 +206,9 @@ void AServerController::ChangeHealth(FRecvPacket_Wrapper& packetWrapper)
 			AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->UpdateHp(ptr->CurrentHealth);
 		}
 	}
+}
+
+void AServerController::GameEnd(FRecvPacket_Wrapper& packetWrapper)
+{
+
 }

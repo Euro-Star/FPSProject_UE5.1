@@ -186,7 +186,10 @@ float AFPSProjectCharacter::SendPlayerRotation()
 	S_PlayerRotation.RotationY = PlayerRotation_Y;
 	S_PlayerRotation.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
 
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerRotation);
+	if (AFPSProjectGameState::Get()->GetGameState())
+	{
+		UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerRotation);
+	}
 
 	return PlayerRotation_Y;
 }
@@ -287,7 +290,10 @@ void AFPSProjectCharacter::SendPlayerMove(EInputKey Key, bool bPressd, bool bTcp
 	S_PlayerMove.CurrentLocation = GetActorLocation();
 	S_PlayerMove.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
 
-	UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	if (AFPSProjectGameState::Get()->GetGameState())
+	{
+		UFPSProjectGameInstance::Getinstance()->SendData(S_PlayerMove);
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -423,14 +429,15 @@ void AFPSProjectCharacter::FireBullet()
 	if (World != nullptr)
 	{
 		const float RandAngle = FMath::RandRange(0.0f, 2.0f) * PI;
-		const float RandFloat = FMath::RandRange(0.0f, 2000.0f * BulletSpread);
+		const float RandFloat = FMath::RandRange(0.0f, SpreadOffset * BulletSpread);
 		const FVector RandomPoint = FVector(0.0f, FMath::Cos(RandAngle) * RandFloat, FMath::Sin(RandAngle) * RandFloat);
 
 		const FRotator SpawnRotation = FP_MuzzleLocation->GetComponentRotation();
 		const FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
 
 		const FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
-		const FVector LineTraceEnd = (ThirdPersonCameraComponent->GetComponentLocation() + RandomPoint) + ThirdPersonCameraComponent->GetForwardVector() * 100000.0f;
+		const FVector LineTraceEnd = (ThirdPersonCameraComponent->GetComponentLocation() + RandomPoint) 
+			+ ThirdPersonCameraComponent->GetForwardVector() * RecognitionDistance;
 
 		FHitResult LineTraceResult;
 		FCollisionQueryParams DefaltParams;
@@ -569,7 +576,7 @@ void AFPSProjectCharacter::ThirdPersonMotionCompensate(float _DeltaTime)
 	if (IsFire() || IsZoomin())
 	{
 		const FTransform CurrentTransform = TPS_Mesh->GetRelativeTransform();
-		const FTransform TargetTransform = FTransform(FRotator(0.0f, -90.0f, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
+		const FTransform TargetTransform = FTransform(FRotator(0.0f, CharacterOffset, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
 		const FTransform ResultTransform = UKismetMathLibrary::TInterpTo(CurrentTransform, TargetTransform, _DeltaTime, 22.5f);
 
 		TPS_Mesh->SetRelativeRotation(FRotator(0.0f, ResultTransform.Rotator().Yaw, 0.0f));
@@ -580,18 +587,15 @@ void AFPSProjectCharacter::ThirdPersonMotionCompensate(float _DeltaTime)
 		{
 			const FTransform CurrentTransform = TPS_Mesh->GetRelativeTransform();
 			const FRotator TargetRotator = UKismetMathLibrary::Conv_VectorToRotator(FVector(GetMoveForward(), GetMoveRight(), 1.0f));
-			const FTransform TargetTransform = FTransform(FRotator(0.0f, TargetRotator.Yaw - 90.0f, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
+			const FTransform TargetTransform = FTransform(FRotator(0.0f, TargetRotator.Yaw + CharacterOffset, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
 			
 			const FTransform ResultTransform = UKismetMathLibrary::TInterpTo(CurrentTransform, TargetTransform, _DeltaTime, 11.25f);
 			
 			TPS_Mesh->SetRelativeRotation(FRotator(0.0f, ResultTransform.Rotator().Yaw, 0.0f));
 
-			const FRotator ResultQuat = UKismetMathLibrary::Conv_VectorToRotator(ThirdPersonCameraComponent->GetForwardVector());
-			SetActorRotation(FRotator(0.0f, ResultQuat.Yaw, 0.0f));
-
-			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, UKismetStringLibrary::Conv_FloatToString(ResultQuat.Yaw));
-		}
-		
+			const FRotator ResultRotator = UKismetMathLibrary::Conv_VectorToRotator(ThirdPersonCameraComponent->GetForwardVector());
+			SetActorRotation(FRotator(0.0f, ResultRotator.Yaw, 0.0f));
+		}	
 	}
 }
 

@@ -21,7 +21,7 @@ protected:
 	float mDeltaTime;
 
 	UPROPERTY()
-	float mLifeTime = 10.0f;
+	float LifeTime = 10.0f;
 
 	UPROPERTY()
 	FVector InitSpawnPoint = FVector(9999.0f, 9999.0f, 9999.0f);
@@ -33,7 +33,10 @@ protected:
 	FVector TargetVector;
 
 	UPROPERTY()
-	float mSpeed = 2000.0f;
+	float Speed = 2000.0f;
+
+	UPROPERTY()
+	int32 Damage = 10;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Mesh")

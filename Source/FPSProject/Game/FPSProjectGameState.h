@@ -47,6 +47,8 @@ private:
 	UPROPERTY()
 	TArray<AOtherCharacter*> OtherCharaterArray;
 
+	bool bGameState = false;
+
 public:
 	UFUNCTION()
 	int32 GetEnemyTarget(int32 CurrentColor);
@@ -68,6 +70,7 @@ public:
 	void RemoveOtherCharacter(int32 Index);
 	inline TObjectPtr<AOtherCharacter> GetOtherCharacter(int32 Index);
 
-	UPROPERTY()
-	bool bTest = false;
+	void SetGameState(bool _bGameState);
+	bool GetGameState() { return bGameState; };
+
 };

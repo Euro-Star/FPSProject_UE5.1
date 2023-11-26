@@ -95,7 +95,9 @@ protected:
 
 	float MoveForwardValue = 0.0f;
 	float MoveRightValue = 0.0f;
-	float AngleValue = 120.0f;
+	float CharacterOffset = -90.0f;
+	float RecognitionDistance = 100000.0f;
+	float SpreadOffset = RecognitionDistance / 50.0f;
 
 	UPROPERTY()
 	FTimerHandle ZoominTimer;

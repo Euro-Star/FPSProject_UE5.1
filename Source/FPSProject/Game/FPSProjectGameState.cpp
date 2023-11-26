@@ -107,3 +107,8 @@ inline TObjectPtr<AOtherCharacter> AFPSProjectGameState::GetOtherCharacter(int32
 		return nullptr;
 	}
 }
+
+void AFPSProjectGameState::SetGameState(bool _bGameState)
+{
+	bGameState = _bGameState;
+}

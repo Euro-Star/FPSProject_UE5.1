@@ -8,6 +8,7 @@
 #include "Game/FPSProjectGameInstance.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Enum/GameEnum.h"
 
 #pragma optimize("", off)
 
@@ -204,27 +205,27 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 {
 	switch (KeyValue)
 	{
-		case 0:
+		case (int32)EInputKey::Up:
 		{
 			bUp = Pressed;
 			break;
 		}
-		case 1:
+		case (int32)EInputKey::Down:
 		{
 			bDown = Pressed;
 			break;
 		}
-		case 2:
+		case (int32)EInputKey::Left:
 		{
 			bLeft = Pressed;
 			break;
 		}
-		case 3:
+		case (int32)EInputKey::Right:
 		{
 			bRight = Pressed;
 			break;
 		}
-		case 4:
+		case (int32)EInputKey::Jump:
 		{
 			if (Pressed)
 			{
@@ -238,7 +239,7 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 			}
 			break;
 		}
-		case 5:
+		case (int32)EInputKey::Run:
 		{	
 			if (Pressed)
 			{
@@ -250,7 +251,7 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 			}
 			break;
 		}
-		case 6:
+		case (int32)EInputKey::ZoomIn:
 		{
 			if (Pressed)
 			{
@@ -262,12 +263,12 @@ void AOtherCharacter::SetKeyDown(int32 KeyValue, bool Pressed)
 			}
 			break;
 		}
-		case 7:
+		case (int32)EInputKey::Reload:
 		{
 			Reload();
 			break;
 		}
-		case 8:
+		case (int32)EInputKey::OnFire:
 		{
 			if (Pressed)
 			{

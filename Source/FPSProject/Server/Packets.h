@@ -314,3 +314,10 @@ struct FRecvPacket_Die
 	UPROPERTY()
 	int32 PlayerIndex;
 };
+
+USTRUCT()
+struct FRecvPacket_GameEnd
+{
+	GENERATED_BODY()
+
+};

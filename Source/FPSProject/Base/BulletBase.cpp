@@ -34,7 +34,7 @@ void ABulletBase::Tick(float DeltaTime)
 
 	mDeltaTime += DeltaTime;
 
-	if (mDeltaTime > mLifeTime)
+	if (mDeltaTime > LifeTime)
 	{
 		WaitBullet();
 		Cast<AFPSProjectCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->mBulletManager->UsedBullet(this);
@@ -44,7 +44,8 @@ void ABulletBase::Tick(float DeltaTime)
 
 void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UGameplayStatics::SpawnDecalAttached(M_BulletHoleArray[FMath::RandRange(0, 2)], FVector(100.0f, 5.0f, 5.0f), OtherComp, NAME_None, Hit.Location, FRotationMatrix::MakeFromX(Hit.Normal).Rotator(), EAttachLocation::KeepWorldPosition, 10.0f);
+	UGameplayStatics::SpawnDecalAttached(M_BulletHoleArray[FMath::RandRange(0, 2)], FVector(100.0f, 5.0f, 5.0f), OtherComp, NAME_None, Hit.Location,
+		FRotationMatrix::MakeFromX(Hit.Normal).Rotator(), EAttachLocation::KeepWorldPosition, 10.0f);
 	WaitBullet();
 
 	if (Cast<AOtherCharacter>(OtherActor) != nullptr)
@@ -54,7 +55,7 @@ void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		FSendPacket_ChangeHealth S_ChangeHealth;
 
 		S_ChangeHealth.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
-		S_ChangeHealth.Value = -10;
+		S_ChangeHealth.Value = -Damage;
 		S_ChangeHealth.PlayerIndex = Cast<AOtherCharacter>(OtherActor)->GetPlayerIndex();
 
 		UFPSProjectGameInstance::Getinstance()->SendData(S_ChangeHealth);
@@ -69,7 +70,7 @@ void ABulletBase::UseBullet(FVector Location, FRotator Rotation, FVector Forward
 	SetActorRotation(Rotation);
 	TargetVector = ForwardVector;
 	SetActorTickEnabled(true);
-	BulletMesh->AddForce(TargetVector * mSpeed);
+	BulletMesh->AddForce(TargetVector * Speed);
 }
 
 void ABulletBase::WaitBullet()

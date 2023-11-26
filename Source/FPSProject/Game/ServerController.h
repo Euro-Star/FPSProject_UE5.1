@@ -61,6 +61,9 @@ protected:
 	UFUNCTION()
 	void ChangeHealth(FRecvPacket_Wrapper& packetWrapper);
 
+	UFUNCTION()
+	void GameEnd(FRecvPacket_Wrapper& packetWrapper);
+
 private:
 	UPROPERTY()
 	TMap<FString, FPacketHandlerFunc> HandleFunc;	
