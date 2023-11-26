@@ -87,8 +87,11 @@ void AServerController::PlayerMove(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
-		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetActorLocation(ptr->CurrentLocation);
-		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetKeyDown(ptr->InputKey, ptr->IsPress);
+		if (IsValid(AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)))
+		{
+			AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetActorLocation(ptr->CurrentLocation);
+			AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetKeyDown(ptr->InputKey, ptr->IsPress);
+		}
 	}
 }
 
@@ -98,7 +101,10 @@ void AServerController::PlayerRotation(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
-		AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetActorRotation(FRotator(0.0f, ptr->RotationY, 0.0f));
+		if (IsValid(AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)))
+		{
+			AFPSProjectGameState::Get()->GetOtherCharacter(ptr->PlayerIndex)->SetActorRotation(FRotator(0.0f, ptr->RotationY, 0.0f));
+		}
 	}
 }
 
