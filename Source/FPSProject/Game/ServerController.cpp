@@ -15,6 +15,7 @@
 #include <Widget/WaitingRoomWidget.h>
 #include "Manager/WidgetManager.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Widget/DyingWidget.h"
 
 AServerController::AServerController()
 {
@@ -215,7 +216,19 @@ void AServerController::GameEnd(FRecvPacket_Wrapper& packetWrapper)
 
 	if(ptr)
 	{
+		UWidgetManager::Get()->GetWidget<UDyingWidget>(EWidget::Dying)->SetTextRank(AFPSProjectGameState::Get()->GetPlayerNum(), 1);
 		UWidgetManager::Get()->AddWidget(EWidget::Dying);
 		AFPSProjectGameState::Get()->SetGameState(false);
+	}
+}
+
+void AServerController::BackToLobby(FRecvPacket_Wrapper& packetWrapper)
+{
+	INIT_FUNCTION(BackToLobby)
+
+	if(ptr)
+	{
+		UFPSProjectGameInstance::Getinstance()->InitGameInfo();
+		UGameplayStatics::OpenLevel(this, "Map_Matching", true);
 	}
 }

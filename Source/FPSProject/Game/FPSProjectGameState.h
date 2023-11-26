@@ -65,11 +65,11 @@ public:
 	int32 GetPlayerIndex();
 
 	UClass* GetOtherCharacterClass();
-	TObjectPtr<AFPSProjectCharacter> GetPlayer();
+	AFPSProjectCharacter* GetPlayer();
 
 	void AddOtherCharacter(AOtherCharacter* _OtherCharacter, int32 Index);
 	void RemoveOtherCharacter(int32 Index);
-	inline TObjectPtr<AOtherCharacter> GetOtherCharacter(int32 Index);
+	AOtherCharacter* GetOtherCharacter(int32 Index);
 
 	void SetGameState(bool _bGameState);
 	bool GetGameState() { return bGameState; }

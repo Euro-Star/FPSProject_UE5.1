@@ -4,6 +4,7 @@
 #include "FPSProjectGameInstance.h"
 #include <SocketClient/Public/PacketExecutor.h>
 #include "Server/Packets.h"
+#include "GameFramework/GameUserSettings.h"
 #include "TestServerPacket.h"
 
 UFPSProjectGameInstance* UFPSProjectGameInstance::Inst;
@@ -27,6 +28,7 @@ void UFPSProjectGameInstance::Init()
 	USocketClientBPLibrary::GetSocketClientTarget()->OnReceiveUDPMessageEventDelegate.AddUObject(this, &UFPSProjectGameInstance::RecvPacket);
 
 	TestServerPack = GetWorld()->SpawnActor<ATestServerPacket>(ATestServerPacket::StaticClass());
+	UGameUserSettings::GetGameUserSettings()->SetScreenResolution(FIntPoint(1920, 1080));
 }
 
 void UFPSProjectGameInstance::ConnectServer()

@@ -327,3 +327,23 @@ struct FRecvPacket_GameEnd
 	GENERATED_BODY()
 
 };
+
+USTRUCT()
+struct FSendPacket_BackToLobby
+{
+	GENERATED_BODY()
+
+	PACKET_CONSTRUCT(BackToLobby)
+
+	UPROPERTY()
+	int32 PlayerIndex;
+
+	UPROPERTY()
+	int32 RoomNumber;
+};
+
+USTRUCT()
+struct FRecvPacket_BackToLobby
+{
+	GENERATED_BODY()
+};

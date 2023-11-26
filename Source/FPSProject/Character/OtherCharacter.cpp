@@ -181,22 +181,25 @@ void AOtherCharacter::OnFireReleased()
 
 void AOtherCharacter::Fire()
 {
-	P_FirePlash->Activate(true);
-
-	if (FireSound != nullptr)
+	if (IsValid(GetWorld()))
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
+		P_FirePlash->Activate(true);
 
-	if (AnimInstance)
-	{
-		if (IsZoomIn())
+			if (IsValid(FireSound))
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+			}
+
+		if (AnimInstance)
 		{
-			AnimInstance->Montage_Play(ZoomFireAnimation, 1.0f);
-		}
-		else
-		{
-			AnimInstance->Montage_Play(HipFireAnimation, 1.0f);
+			if (IsZoomIn())
+			{
+				AnimInstance->Montage_Play(ZoomFireAnimation, 1.0f);
+			}
+			else
+			{
+				AnimInstance->Montage_Play(HipFireAnimation, 1.0f);
+			}
 		}
 	}
 }

@@ -6,6 +6,8 @@
 #include "Components/TextBlock.h"
 #include "Game/FPSProjectGameInstance.h"
 #include "Kismet/GameplayStatics.h" 
+#include "Server/Packets.h"
+#include "Game/FPSProjectGameState.h"
 
 void UDyingWidget::NativeConstruct()
 {
@@ -16,9 +18,12 @@ void UDyingWidget::NativeConstruct()
 
 void UDyingWidget::OnclickedToLobby()
 {
-	UFPSProjectGameInstance::Getinstance()->InitGameInfo();
+	FSendPacket_BackToLobby S_BackToLobby;
 
-	UGameplayStatics::OpenLevel(this, "Map_Matching", true);
+	S_BackToLobby.PlayerIndex = AFPSProjectGameState::Get()->GetPlayerIndex();
+	S_BackToLobby.RoomNumber = UFPSProjectGameInstance::Getinstance()->GetRoomNumber();
+
+	UFPSProjectGameInstance::Getinstance()->SendData(S_BackToLobby);
 }
 
 void UDyingWidget::SetTextRank(int32 PlayerNum, int32 Rank)

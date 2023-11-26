@@ -79,7 +79,7 @@ UClass* AFPSProjectGameState::GetOtherCharacterClass()
 	return OtherCharacter;
 }
 
-TObjectPtr<AFPSProjectCharacter> AFPSProjectGameState::GetPlayer()
+AFPSProjectCharacter* AFPSProjectGameState::GetPlayer()
 {
 	return Player;
 }
@@ -95,7 +95,7 @@ void AFPSProjectGameState::RemoveOtherCharacter(int32 Index)
 	OtherCharaterArray[Index] = nullptr;
 }
 
-inline TObjectPtr<AOtherCharacter> AFPSProjectGameState::GetOtherCharacter(int32 Index)
+AOtherCharacter* AFPSProjectGameState::GetOtherCharacter(int32 Index)
 {
 	if (OtherCharaterArray[Index])
 	{
