@@ -177,7 +177,8 @@ void AServerController::GameStartButton(FRecvPacket_Wrapper& packetWrapper)
 
 	if (ptr)
 	{
-		UGameplayStatics::OpenLevel(this, "PersistentMap", true);
+		FString LevelPath = L"/Game/Maps/PersistentMap";
+		UGameplayStatics::OpenLevel(this, *LevelPath, true);
 	}
 }
 

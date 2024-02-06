@@ -15,6 +15,11 @@ class UMotionControllerComponent;
 class UAnimMontage;
 class USoundBase;
 class UParticleSystemComponent;
+class UWeaponComponent;
+
+DECLARE_MULTICAST_DELEGATE(FDele_OnFire);
+DECLARE_MULTICAST_DELEGATE(FDele_OnFireRelease);
+DECLARE_MULTICAST_DELEGATE(FDele_Reload);
 
 UCLASS(config=Game)
 class AFPSProjectCharacter : public ACharacter
@@ -22,22 +27,6 @@ class AFPSProjectCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// FPSCharacter //
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	USkeletalMeshComponent* FPS_CharacterMesh;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UCameraComponent* FirstPersonCameraComponent;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	USceneComponent* SocketHandLeft;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshKnife;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	USceneComponent* SocketHandRight;
-
 	// TPSCharacter //
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
 	USkeletalMeshComponent* TPS_Mesh;
@@ -47,20 +36,7 @@ public:
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* ThirdPersonCameraComponent;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	USceneComponent* RootCosmetics;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshGoggles;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshHelmet;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshHeadset;
 	
-	// Default Character //
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
 	USkeletalMeshComponent* FP_Gun;
 
@@ -84,6 +60,13 @@ public:
 
 	UPROPERTY()
 	class AFPSProjectGameState* GameState;
+
+	UPROPERTY()
+	UWeaponComponent* WeaponComponent;
+
+	FDele_OnFire Dele_OnFire;
+	FDele_OnFireRelease Dele_OnFireReleased;
+	FDele_Reload Dele_Reload;
 
 protected:
 	bool bFps = true;
@@ -233,19 +216,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	FVector GunOffset;
 
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AFPSProjectProjectile> ProjectileClass;
-
-	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	USoundBase* FireSound;
 
-	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
 
@@ -264,10 +240,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* ZoomFireAnimation;
 
-	/** Whether to use motion controller location for aiming. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	uint8 bUsingMotionControllers : 1;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector BulletOffset;
 
@@ -276,38 +248,20 @@ public:
 
 protected:
 	
-	/** Fires a projectile. */
 	void OnFire();
 	void OnFireReleased();
 	void FireBullet();
 	
 	void ChangeView();
 
-	/** Handles moving forward/backward */
 	void MoveForward(float Val);
-
-	/** Handles stafing movement, left and right */
 	void MoveRight(float Val);
 
 	void SetFPSCharacter();
 	void SetTPSCharacter();
 
-	/**
-	 * Called via input to turn look up/down at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void LookUpAtRate(float Rate);
 	
 protected:
-	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-	// End of APawn interface
-
-public:
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMeshFPS() const { return FPS_CharacterMesh; }
-	/** Returns FirstPersonCameraComponent subobject **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
 };
 
