@@ -13,6 +13,7 @@
 #include "Manager/BulletManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/KismetStringLibrary.h"
 
 
 UWeaponComponent::UWeaponComponent()
@@ -83,9 +84,11 @@ void UWeaponComponent::SetChangeWeapon(EWeaponType WeaponType)
 	SM_Magazine->AttachToComponent(SK_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
 
 	P_FirePlash->SetTemplate(CurrentWeapon->P_FirePlash);
-	P_FirePlash->SetRelativeLocation(CurrentWeapon->ParticleLocation);
+	P_FirePlash->AttachToComponent(SK_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Muzzle"));
+	P_FirePlash->SetRelativeTransform(CurrentWeapon->ParticleTransform);
 
-	S_MuzzleLocation->SetRelativeLocation(CurrentWeapon->MuzzleLocation);
+	S_MuzzleLocation->AttachToComponent(SK_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Muzzle"));
+	S_MuzzleLocation->SetRelativeTransform(CurrentWeapon->MuzzleTransform);
 
 	Damage = CurrentWeapon->Damage;
 	MaxAmmo = CurrentWeapon->MaxAmmo;
@@ -99,6 +102,8 @@ void UWeaponComponent::SaveCurrentAmmo()
 
 void UWeaponComponent::OnFire()
 {
+	FireBullet(Player->ThirdPersonCameraComponent->GetComponentLocation(), Player->ThirdPersonCameraComponent->GetForwardVector());
+
 	GetWorld()->GetTimerManager().SetTimer(OnFireTimer, FTimerDelegate::CreateLambda([&]() {
 		{
 			if (Player->IsReload())

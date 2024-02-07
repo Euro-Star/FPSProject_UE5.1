@@ -43,10 +43,10 @@ public:
 	FRotator GunRotator;
 
 	UPROPERTY(EditAnywhere)
-	FVector MuzzleLocation;
+	FTransform MuzzleTransform;
 
 	UPROPERTY(EditAnywhere)
-	FVector ParticleLocation;
+	FTransform ParticleTransform;
 
 	// Anim //
 	UPROPERTY(EditAnywhere)

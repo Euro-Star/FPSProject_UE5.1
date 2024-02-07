@@ -37,17 +37,17 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* ThirdPersonCameraComponent;
 	
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
-	USkeletalMeshComponent* FP_Gun;
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
+	//USkeletalMeshComponent* FP_Gun;
+	//
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
+	//USceneComponent* FP_MuzzleLocation;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
-	USceneComponent* FP_MuzzleLocation;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* Scope;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* Magazine;
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
+	//UStaticMeshComponent* Scope;
+	//
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Mesh)
+	//UStaticMeshComponent* Magazine;
 
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere)
 	class ABulletManager* mBulletManager;
@@ -243,8 +243,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector BulletOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystemComponent* P_FirePlash;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UParticleSystemComponent* P_FirePlash;
 
 protected:
 	

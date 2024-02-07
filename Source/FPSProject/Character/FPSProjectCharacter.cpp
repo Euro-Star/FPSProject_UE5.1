@@ -56,25 +56,25 @@ AFPSProjectCharacter::AFPSProjectCharacter()
 	ThirdPersonCameraComponent->bAutoActivate = false;
 
 	// Default Init //
-	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(false);			
-	FP_Gun->bCastDynamicShadow = false;
-	FP_Gun->CastShadow = false;
-	FP_Gun->SetupAttachment(RootComponent);
+	//FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
+	//FP_Gun->SetOnlyOwnerSee(false);			
+	//FP_Gun->bCastDynamicShadow = false;
+	//FP_Gun->CastShadow = false;
+	//FP_Gun->SetupAttachment(RootComponent);
 
-	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-	FP_MuzzleLocation->SetupAttachment(FP_Gun);
+	//FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+	//FP_MuzzleLocation->SetupAttachment(FP_Gun);
 
 	GunOffset = FVector(75.0f, 0.0f, -5.0f);
 
-	Scope = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Scope"));
-	Scope->SetupAttachment(RootComponent);
+	//Scope = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Scope"));
+	//Scope->SetupAttachment(RootComponent);
+	//
+	//Magazine = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Magazine"));
+	//Magazine->SetupAttachment(RootComponent);
 
-	Magazine = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Magazine"));
-	Magazine->SetupAttachment(RootComponent);
-
-	P_FirePlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FirePlash"));
-	P_FirePlash->SetupAttachment(FP_Gun);
+	//P_FirePlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FirePlash"));
+	//P_FirePlash->SetupAttachment(FP_Gun);
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("Weapon"));
 }
@@ -89,15 +89,15 @@ void AFPSProjectCharacter::BeginPlay()
 	GamePlayWidget = UWidgetManager::Get()->GetWidget<UGamePlayWidget>(EWidget::GamePlay);
 	GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
 
-	FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
-	FP_Gun->SetRelativeLocationAndRotation(FVector(-8.11f, 0.84f, -2.13f), FRotator(-78.2f, -68.1f, 161.9f));// y, z, x
-	FP_Gun->SetWorldScale3D(FVector(0.75f, 0.75f, 0.75f));
-	
-	Scope->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Scope"));
-	Magazine->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
+	//FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
+	//FP_Gun->SetRelativeLocationAndRotation(FVector(-8.11f, 0.84f, -2.13f), FRotator(-78.2f, -68.1f, 161.9f));// y, z, x
+	//FP_Gun->SetWorldScale3D(FVector(0.75f, 0.75f, 0.75f));
+	//
+	//Scope->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Scope"));
+	//Magazine->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
 
 	AnimInstance = TPS_Mesh->GetAnimInstance();
-	MagazineAnimInstance = FP_Gun->GetAnimInstance();
+	//MagazineAnimInstance = FP_Gun->GetAnimInstance();
 
 	WeaponComponent->SetAttachToComponent(TPS_Mesh, TEXT("J_Bip_R_Hand"));
 }
@@ -299,14 +299,13 @@ void AFPSProjectCharacter::OnFire()
 
 		bFire = true;
 		SendPlayerMove(EInputKey::OnFire);
+		Dele_OnFire.Broadcast();
 		FireBullet();
 	}
 	else
 	{
 		return;
 	}
-
-	Dele_OnFire.Broadcast();
 
 	GetWorld()->GetTimerManager().SetTimer(OnFireTimer, FTimerDelegate::CreateLambda([&]() {
 		{
@@ -340,7 +339,6 @@ void AFPSProjectCharacter::OnFire()
 
 void AFPSProjectCharacter::OnFireReleased()
 {
-	//bUseControllerRotationYaw = false;
 	if (!IsZoomin())
 	{
 		ReleaseHipFire();
@@ -356,46 +354,6 @@ void AFPSProjectCharacter::OnFireReleased()
 
 void AFPSProjectCharacter::FireBullet()
 {
-	//UWorld* const World = GetWorld();
-	//if (World != nullptr)
-	//{
-	//	float RandAngle = FMath::RandRange(0.0f, 2.0f) * PI;
-	//	float RandFloat = FMath::RandRange(0.0f, SpreadOffset * BulletSpread);
-	//	FVector RandomPoint = FVector(0.0f, FMath::Cos(RandAngle) * RandFloat, FMath::Sin(RandAngle) * RandFloat);
-	//
-	//	FRotator SpawnRotation = FP_MuzzleLocation->GetComponentRotation();
-	//	FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
-	//
-	//	FVector LineTraceStart = ThirdPersonCameraComponent->GetComponentLocation();
-	//	FVector LineTraceEnd = (ThirdPersonCameraComponent->GetComponentLocation() + RandomPoint) 
-	//		+ ThirdPersonCameraComponent->GetForwardVector() * RecognitionDistance;
-	//
-	//	FHitResult LineTraceResult;
-	//	FCollisionQueryParams DefaltParams;
-	//
-	//	GetWorld()->LineTraceSingleByChannel(LineTraceResult, LineTraceStart, LineTraceEnd, ECC_Visibility, DefaltParams);
-	//	//DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor(0, 255, 0, 0), true, 1.0f, 0, 2);
-	//
-	//	const FVector TargetPoint = FVector(LineTraceResult.ImpactPoint - SpawnLocation).GetSafeNormal();
-	//
-	//	ABulletBase* Bullet = nullptr;
-	//	Bullet = mBulletManager->UseBullet(Bullet, EBulletType::Rifle);
-	//	if (Bullet)
-	//	{
-	//		Bullet->UseBullet(SpawnLocation, SpawnRotation, TargetPoint);
-	//
-	//		CurrentAmmo -= 1;
-	//
-	//		GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
-	//		P_FirePlash->Activate(true);
-	//	}
-	//}
-
-	//if (FireSound != nullptr)
-	//{
-	//	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	//}
-
 	if (AnimInstance)
 	{
 		if (IsZoomin())
@@ -488,8 +446,8 @@ void AFPSProjectCharacter::Reload()
 			CompleteDelegate.BindUObject(this, &AFPSProjectCharacter::ReloadMontageComplete);
 
 			AnimInstance->Montage_Play(ReloadAnimation, 1.0f);
-			MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
-			MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
+			//MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
+			//MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
 
 			bReload = true;
 		}
@@ -668,7 +626,7 @@ void AFPSProjectCharacter::SetTPSCharacter()
 	CameraBoom->SetActive(true);
 	TPS_Mesh->SetVisibility(true, true);
 
-	FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+	//FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 
 	bFps = false;
 }
