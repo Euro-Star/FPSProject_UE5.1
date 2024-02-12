@@ -6,11 +6,7 @@
 // Sets default values for this component's properties
 UStatusComponent::UStatusComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -18,17 +14,31 @@ UStatusComponent::UStatusComponent()
 void UStatusComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 	
 }
 
-
-// Called every frame
-void UStatusComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UStatusComponent::SetZoomin(bool _bZoomin)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	bZoomIn = _bZoomin;
+}
 
-	// ...
+void UStatusComponent::SetReload(bool _bReload)
+{
+	bReload = _bReload;
+}
+
+void UStatusComponent::SetRun(bool _bRun)
+{
+	bRun = _bRun;
+}
+
+void UStatusComponent::SetDie(bool _bDie)
+{
+	bDie = _bDie;
+}
+
+void UStatusComponent::SetFire(bool _bFire)
+{
+	bFire = _bFire;
 }
 

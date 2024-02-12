@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Character/Components/StatusComponent.h"
 
 
 UWeaponComponent::UWeaponComponent()
@@ -48,6 +49,8 @@ void UWeaponComponent::BeginPlay()
 	GamePlayWidget = UWidgetManager::Get()->GetWidget<UGamePlayWidget>(EWidget::GamePlay);
 	Player = AFPSProjectGameState::Get()->GetPlayer();
 	mBulletManager = Cast<ABulletManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ABulletManager::StaticClass()));
+
+	StatusComponent = Player->GetStatusComponent();
 
 	Player->Dele_OnFire.AddUObject(this, &UWeaponComponent::OnFire);
 	Player->Dele_OnFireReleased.AddUObject(this, &UWeaponComponent::OnFireReleased);
@@ -106,7 +109,7 @@ void UWeaponComponent::OnFire()
 
 	GetWorld()->GetTimerManager().SetTimer(OnFireTimer, FTimerDelegate::CreateLambda([&]() {
 		{
-			if (Player->IsReload())
+			if (StatusComponent->IsReload())
 			{
 				OnFireReleased();
 				return;
@@ -114,14 +117,10 @@ void UWeaponComponent::OnFire()
 	
 			if (CurrentAmmo > 0)
 			{
-				if (BulletSpread >= 1.0f)
-				{
-					BulletSpread = 1.0f;
-				}
-				else
-				{
-					BulletSpread += 0.1f;
-				}
+				if (BulletSpread >= 1.0f) 
+					{ BulletSpread = 1.0f; } 
+				else 
+					{ BulletSpread += 0.1f;}
 	
 				FireBullet(Player->ThirdPersonCameraComponent->GetComponentLocation(), Player->ThirdPersonCameraComponent->GetForwardVector());
 			}
@@ -198,9 +197,9 @@ void UWeaponComponent::Reload()
 
 void UWeaponComponent::ReloadMontageComplete(UAnimMontage* AnimMontage, bool)
 {
-	CurrentAmmo = 30;
+	CurrentAmmo = MaxAmmo;
 	GamePlayWidget->UpdateAmmoText(FString::FromInt(CurrentAmmo));
-	//Player->
+	StatusComponent->SetReload(false);
 }
 
 

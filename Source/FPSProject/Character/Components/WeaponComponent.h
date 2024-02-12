@@ -10,6 +10,7 @@ class UWeaponDataAsset;
 class UGamePlayWidget;
 class AFPSProjectCharacter;
 class ABulletManager;
+class UStatusComponent;
 
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
@@ -74,6 +75,9 @@ protected:
 	// Need Info //
 	UPROPERTY()
 	AFPSProjectCharacter* Player;
+
+	UPROPERTY()
+	UStatusComponent* StatusComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere)
 	ABulletManager* mBulletManager;

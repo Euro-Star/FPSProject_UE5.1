@@ -16,6 +16,7 @@ class UAnimMontage;
 class USoundBase;
 class UParticleSystemComponent;
 class UWeaponComponent;
+class UStatusComponent;
 
 DECLARE_MULTICAST_DELEGATE(FDele_OnFire);
 DECLARE_MULTICAST_DELEGATE(FDele_OnFireRelease);
@@ -64,6 +65,9 @@ public:
 	UPROPERTY()
 	UWeaponComponent* WeaponComponent;
 
+	UPROPERTY()
+	UStatusComponent* StatusComponent;
+
 	FDele_OnFire Dele_OnFire;
 	FDele_OnFireRelease Dele_OnFireReleased;
 	FDele_Reload Dele_Reload;
@@ -96,9 +100,6 @@ protected:
 
 	UPROPERTY()
 	float ZoomOutValue = 93.0f;
-
-	UPROPERTY()
-	int32 CurrentAmmo = 30;
 
 	UPROPERTY()
 	int32 Hp = 100;
@@ -155,8 +156,6 @@ protected:
 
 	void SendPlayerMove(EInputKey Key, bool bPressd = true, bool bTcp = true);
 
-	void ReloadMontageComplete(UAnimMontage* AnimMontage, bool);
-
 	void ThirdPersonMotionCompensate(float _DeltaTime);
 
 protected:
@@ -177,28 +176,13 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	bool IsZoomin() { return bZoomIn; };
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetCurrentAmmo() { return CurrentAmmo; };
-
-	UFUNCTION(BlueprintCallable)
 	float GetMoveForward() { return MoveForwardValue; };
 
 	UFUNCTION(BlueprintCallable)
 	float GetMoveRight() { return MoveRightValue; };
 
 	UFUNCTION(BlueprintCallable)
-	bool IsReload() { return bReload; };
-
-	UFUNCTION(BlueprintCallable)
-	bool IsRun() { return bRun; };
-
-	UFUNCTION(BlueprintCallable)
-	bool IsDie() { return bDie; };
-
-	UFUNCTION(BlueprintCallable)
-	bool IsFire() { return bFire; };
+	UStatusComponent* GetStatusComponent() { return StatusComponent; };
 
 	UFUNCTION()
 	void Die(int32 Rank);
@@ -215,9 +199,6 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	USoundBase* FireSound;
@@ -239,12 +220,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* ZoomFireAnimation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector BulletOffset;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//UParticleSystemComponent* P_FirePlash;
 
 protected:
 	

@@ -25,6 +25,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Widget/DyingWidget.h"
 #include "Character/Components/WeaponComponent.h"
+#include "Character/Components/StatusComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -55,28 +56,8 @@ AFPSProjectCharacter::AFPSProjectCharacter()
 	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->bAutoActivate = false;
 
-	// Default Init //
-	//FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	//FP_Gun->SetOnlyOwnerSee(false);			
-	//FP_Gun->bCastDynamicShadow = false;
-	//FP_Gun->CastShadow = false;
-	//FP_Gun->SetupAttachment(RootComponent);
-
-	//FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-	//FP_MuzzleLocation->SetupAttachment(FP_Gun);
-
-	GunOffset = FVector(75.0f, 0.0f, -5.0f);
-
-	//Scope = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Scope"));
-	//Scope->SetupAttachment(RootComponent);
-	//
-	//Magazine = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Magazine"));
-	//Magazine->SetupAttachment(RootComponent);
-
-	//P_FirePlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FirePlash"));
-	//P_FirePlash->SetupAttachment(FP_Gun);
-
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("Weapon"));
+	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("Status"));
 }
 
 void AFPSProjectCharacter::BeginPlay()
@@ -89,16 +70,7 @@ void AFPSProjectCharacter::BeginPlay()
 	GamePlayWidget = UWidgetManager::Get()->GetWidget<UGamePlayWidget>(EWidget::GamePlay);
 	GameState = Cast<AFPSProjectGameState>(UGameplayStatics::GetGameState(GetWorld()));
 
-	//FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("J_Bip_R_Hand"));
-	//FP_Gun->SetRelativeLocationAndRotation(FVector(-8.11f, 0.84f, -2.13f), FRotator(-78.2f, -68.1f, 161.9f));// y, z, x
-	//FP_Gun->SetWorldScale3D(FVector(0.75f, 0.75f, 0.75f));
-	//
-	//Scope->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Scope"));
-	//Magazine->AttachToComponent(FP_Gun, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("SOCKET_Magazine"));
-
 	AnimInstance = TPS_Mesh->GetAnimInstance();
-	//MagazineAnimInstance = FP_Gun->GetAnimInstance();
-
 	WeaponComponent->SetAttachToComponent(TPS_Mesh, TEXT("J_Bip_R_Hand"));
 }
 
@@ -284,20 +256,18 @@ void AFPSProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void AFPSProjectCharacter::OnFire()
 {
-	if (bReload)
-	{
-		return;
-	}
-	if (CurrentAmmo > 0)
+	if (StatusComponent->IsReload()) { return; }
+
+	if (WeaponComponent->GetCurrentAmmo() > 0)
 	{	
 		bUseControllerRotationYaw = true;
 
-		if (!IsZoomin())
+		if (!StatusComponent->IsZoomin())
 		{
 			HipFire();
 		}
 
-		bFire = true;
+		StatusComponent->SetFire(true);
 		SendPlayerMove(EInputKey::OnFire);
 		Dele_OnFire.Broadcast();
 		FireBullet();
@@ -309,23 +279,14 @@ void AFPSProjectCharacter::OnFire()
 
 	GetWorld()->GetTimerManager().SetTimer(OnFireTimer, FTimerDelegate::CreateLambda([&]() {
 		{
-			if (bReload)
+			if (StatusComponent->IsReload())
 			{
 				OnFireReleased();
 				return;
 			}
 
-			if (CurrentAmmo > 0)
+			if (WeaponComponent->GetCurrentAmmo() > 0)
 			{
-				if (BulletSpread >= 1.0f)
-				{
-					BulletSpread = 1.0f;
-				}
-				else
-				{
-					BulletSpread += 0.1f;
-				}
-
 				FireBullet();
 			}
 			else
@@ -339,14 +300,14 @@ void AFPSProjectCharacter::OnFire()
 
 void AFPSProjectCharacter::OnFireReleased()
 {
-	if (!IsZoomin())
+	if (!StatusComponent->IsZoomin())
 	{
 		ReleaseHipFire();
 	}
 
 	Dele_OnFireReleased.Broadcast();
 
-	bFire = false;
+	StatusComponent->SetFire(false);
 	BulletSpread = 0.0f;
 	SendPlayerMove(EInputKey::OnFire, false);
 	GetWorld()->GetTimerManager().ClearTimer(OnFireTimer);
@@ -356,7 +317,7 @@ void AFPSProjectCharacter::FireBullet()
 {
 	if (AnimInstance)
 	{
-		if (IsZoomin())
+		if (StatusComponent->IsZoomin())
 		{
 			AnimInstance->Montage_Play(ZoomFireAnimation, 1.0f);
 		}
@@ -369,14 +330,14 @@ void AFPSProjectCharacter::FireBullet()
 
 void AFPSProjectCharacter::ZoomIn()
 {
-	if (!IsZoomin())
+	if (!StatusComponent->IsZoomin())
 	{
-		if (IsRun())
+		if (StatusComponent->IsRun())
 		{
 			RunEnd();
 		}
 
-		bZoomIn = true;
+		StatusComponent->SetZoomin(true);
 		bUseControllerRotationYaw = true;
 		SendPressPlayerZoomIn();
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
@@ -394,9 +355,9 @@ void AFPSProjectCharacter::ZoomIn()
 
 void AFPSProjectCharacter::ZoomOut()
 {
-	if (bZoomIn)
+	if (StatusComponent->IsZoomin())
 	{
-		bZoomIn = false;
+		StatusComponent->SetZoomin(false);
 		bUseControllerRotationYaw = false;
 		SendReleasePlayerZoomOut();
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
@@ -414,24 +375,10 @@ void AFPSProjectCharacter::ZoomOut()
 
 void AFPSProjectCharacter::Reload()
 {
-	if (bReload || bPressedJump || GetCharacterMovement()->IsFalling() || WeaponComponent->GetCurrentAmmo() == 30)
-	{
-		return;
-	}
+	if (StatusComponent->IsReload() || bPressedJump || GetCharacterMovement()->IsFalling() || WeaponComponent->GetCurrentAmmo() == WeaponComponent->GetMaxAmmo()) { return; }
 
-	if (bZoomIn)
-	{
-		ZoomOut();
-	}
-	else
-	{
-		ReleaseHipFire();
-	}
-
-	if (bRun)
-	{
-		RunEnd();
-	}
+	if (StatusComponent->IsRun()) { RunEnd(); }
+	if (StatusComponent->IsZoomin()) { ZoomOut(); } else { ReleaseHipFire(); }
 
 	Dele_Reload.Broadcast();
 
@@ -441,35 +388,22 @@ void AFPSProjectCharacter::Reload()
 		{
 			SendPlayerMove(EInputKey::Reload);
 
-			FOnMontageBlendingOutStarted CompleteDelegate;
-
-			CompleteDelegate.BindUObject(this, &AFPSProjectCharacter::ReloadMontageComplete);
-
 			AnimInstance->Montage_Play(ReloadAnimation, 1.0f);
-			//MagazineAnimInstance->Montage_Play(MagazineAnimation, 0.7f);
-			//MagazineAnimInstance->Montage_SetEndDelegate(CompleteDelegate, MagazineAnimation);
 
-			bReload = true;
+			StatusComponent->SetReload(true);
 		}
 	}
 }
 
-void AFPSProjectCharacter::ReloadMontageComplete(UAnimMontage* AnimMontage, bool)
-{
-	CurrentAmmo = 30;
-	bReload = false;
-	GamePlayWidget->UpdateAmmoText(FString::FromInt(GetCurrentAmmo()));
-}
-
 void AFPSProjectCharacter::ThirdPersonMotionCompensate(float _DeltaTime)
 {
-	if (IsFire() || IsZoomin())
+	if (StatusComponent->IsFire() || StatusComponent->IsZoomin())
 	{
-		//const FTransform CurrentTransform = TPS_Mesh->GetRelativeTransform();
-		//const FTransform TargetTransform = FTransform(FRotator(0.0f, CharacterOffset, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
-		//const FTransform ResultTransform = UKismetMathLibrary::TInterpTo(CurrentTransform, TargetTransform, _DeltaTime, 22.5f);
-		//
-		//TPS_Mesh->SetRelativeRotation(FRotator(0.0f, ResultTransform.Rotator().Yaw, 0.0f));
+		const FTransform CurrentTransform = TPS_Mesh->GetRelativeTransform();
+		const FTransform TargetTransform = FTransform(FRotator(0.0f, CharacterOffset, 0.0f), FVector(0.0f, 0.0f, 0.0f), FVector(1.0f, 1.0f, 1.0f));
+		const FTransform ResultTransform = UKismetMathLibrary::TInterpTo(CurrentTransform, TargetTransform, _DeltaTime, 22.5f);
+		
+		TPS_Mesh->SetRelativeRotation(FRotator(0.0f, ResultTransform.Rotator().Yaw, 0.0f));
 	}
 	else
 	{
@@ -491,7 +425,7 @@ void AFPSProjectCharacter::ThirdPersonMotionCompensate(float _DeltaTime)
 
 void AFPSProjectCharacter::RunEnd()
 {
-	bRun = false;
+	StatusComponent->SetRun(false);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
 	SendReleasePlayerRun();
@@ -499,7 +433,7 @@ void AFPSProjectCharacter::RunEnd()
 
 void AFPSProjectCharacter::HipFire()
 {
-	if (bRun)
+	if (StatusComponent->IsRun())
 	{
 		RunEnd();
 	}
@@ -519,7 +453,7 @@ void AFPSProjectCharacter::HipFire()
 
 void AFPSProjectCharacter::ReleaseHipFire()
 {
-	if (IsFire())
+	if (StatusComponent->IsFire())
 	{
 		bUseControllerRotationYaw = false;
 		GetWorld()->GetTimerManager().SetTimer(ZoominTimer, FTimerDelegate::CreateLambda([&]() {
@@ -537,12 +471,12 @@ void AFPSProjectCharacter::ReleaseHipFire()
 
 void AFPSProjectCharacter::RunStart()
 {
-	if (IsReload())
+	if (StatusComponent->IsReload())
 	{
 		return;
 	}
 
-	bRun = true;
+	StatusComponent->SetRun(true);
 	ZoomOut();
 	OnFireReleased();
 	GetCharacterMovement()->MaxWalkSpeed = 700.0f;
@@ -552,7 +486,7 @@ void AFPSProjectCharacter::RunStart()
 
 void AFPSProjectCharacter::Die(int32 Rank)
 {
-	bDie = true;
+	StatusComponent->SetDie(true);
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
 	UWidgetManager::Get()->GetWidget<UDyingWidget>(EWidget::Dying)->SetTextRank(AFPSProjectGameState::Get()->GetPlayerNum(), Rank);
 	UWidgetManager::Get()->AddWidget(EWidget::Dying);
@@ -615,8 +549,6 @@ void AFPSProjectCharacter::SetFPSCharacter()
 	//FPS_CharacterMesh->SetVisibility(true, true);
 	TPS_Mesh->SetVisibility(false, true);
 
-	//FP_Gun->AttachToComponent(FPS_CharacterMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-
 	bFps = true;
 }
 
@@ -625,8 +557,6 @@ void AFPSProjectCharacter::SetTPSCharacter()
 	ThirdPersonCameraComponent->SetActive(true);
 	CameraBoom->SetActive(true);
 	TPS_Mesh->SetVisibility(true, true);
-
-	//FP_Gun->AttachToComponent(TPS_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 
 	bFps = false;
 }
